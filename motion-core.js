@@ -9,7 +9,7 @@
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   function dimensions(viewportWidth, viewportHeight = 1000) {
     const size = Math.max(72, Math.min(viewportWidth <= 540 ? 152 : 192, Math.max(72,viewportWidth - 16), Math.max(72,viewportHeight - 24)));
-    return { width: size, height: size, ground: 10, stride: size * 0.43, speed: size * 0.44 };
+    return { width: size, height: size, ground: 10, stride: size * 0.43, speed: size * 0.62 };
   }
   function gaitPhaseAtDistance(distance, stride) {
     return ((Math.max(0, distance) / Math.max(1, stride)) % 1) * WALK_FRAMES;

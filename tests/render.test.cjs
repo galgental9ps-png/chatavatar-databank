@@ -48,21 +48,20 @@ test('Unchanged pictures are cached while consecutive walking poses still advanc
   assert.equal(canvas.calls.length,walking);
   art.paint(canvas,'walk',3.2,1);assert.ok(canvas.calls.length>walking);
 });
-test('Source alpha is made solid, invisible halo pixels disappear and the colors gain contrast',async()=>{
+test('Source alpha is made solid without warming or darkening the original palette',async()=>{
   const {canvas,canvases}=await artFixture();
   const source=canvases.find(c=>c.context.prepared).context.prepared;
   assert.equal(source[3],255);assert.equal(source[7],0);assert.equal(source[11],255);
-  assert.ok(source[0]<21);assert.ok(source[1]<55);assert.ok(source[2]>=133);
+  assert.deepEqual(source.slice(0,3),[21,55,133]);
   assert.equal(canvas.context.filter,'none');
 });
-test('Fractional phases reach the motion renderer with an opaque canvas draw',async()=>{
-  const rendered=[],surface={width:192,height:192};
-  const globals={ChatAvatarWalkFlow:{frames:16},ChatAvatarWalkRenderer:{create(){return {render(...args){rendered.push(args);return surface;}};}}};
+test('Fractional walking phases reach the joint renderer without being rounded to pictures',async()=>{
+  const rendered=[];
+  const globals={ChatAvatarRig:{paint(...args){rendered.push(args);}}};
   const {art,canvas}=await artFixture({globals});
   for(const phase of [2,2.25,2.5,2.75])art.paint(canvas,'walk',phase,-1);
-  assert.deepEqual(rendered.map(r=>r[1]),[2,2.25,2.5,2.75]);
-  assert.equal(canvas.dataset.renderer,'motion');
-  assert.ok(canvas.calls.filter(c=>c.args?.[0]===surface).every(c=>c.alpha===1));
+  assert.deepEqual(rendered.filter(r=>r[2]==='walk').map(r=>r[3]),[2,2.25,2.5,2.75]);
+  assert.ok(rendered.filter(r=>r[2]==='walk').every(r=>r[4]===-1));
 });
 test('A device without motion interpolation still receives solid colored poses',async()=>{
   const globals={ChatAvatarWalkFlow:{frames:16},ChatAvatarWalkRenderer:{create(){return null;}}};

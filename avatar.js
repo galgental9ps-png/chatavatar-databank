@@ -4,7 +4,7 @@
   if (window.ChatAvatar) return;
   const script = document.currentScript;
   const BASE = new URL('.', script.src).href;
-  const VERSION = 'tavi-motion-7';
+  const VERSION = 'tavi-motion-8';
   const deps = new Map();
   function loadScript(url) {
     if (!deps.has(url)) deps.set(url, new Promise((resolve, reject) => { const s = document.createElement('script'); s.src = url; s.onload = resolve; s.onerror = () => reject(Error('Datei konnte nicht geladen werden: ' + url)); document.head.append(s); }));
@@ -14,8 +14,7 @@
     window.ChatAvatarKnowledge ? Promise.resolve() : loadScript(BASE + 'knowledge-core.js'),
     window.ChatAvatarMotion ? Promise.resolve() : loadScript(BASE + 'motion-core.js?v=' + VERSION),
     window.ChatAvatarArt ? Promise.resolve() : loadScript(BASE + 'mascot.js?v=' + VERSION),
-    window.ChatAvatarWalkFlow ? Promise.resolve() : loadScript(BASE + 'walk-flow.js?v=' + VERSION),
-    window.ChatAvatarWalkRenderer ? Promise.resolve() : loadScript(BASE + 'walk-renderer.js?v=' + VERSION)
+    window.ChatAvatarRig ? Promise.resolve() : loadScript(BASE + 'rig.js?v=' + VERSION)
   ]);
   function el(tag, cls, text) { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
   class Mascot {
@@ -109,7 +108,7 @@
       this.character.dataset.state=state;this.drawFrame();
     }
     drawFrame() {
-      if(this.visual)window.ChatAvatarArt.paint(this.visual,this.state,this.motion.matches?0:this.frame,this.facing);
+      if(this.visual)window.ChatAvatarArt.paint(this.visual,this.state,this.motion.matches?0:this.frame,this.facing,this.paused||this.motion.matches);
       const paused=String(this.paused);if(this.character.dataset.paused!==paused)this.character.dataset.paused=paused;
     }
     position() {

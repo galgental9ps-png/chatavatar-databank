@@ -2,10 +2,9 @@
 (function () {
   'use strict';
   const base=new URL('.',document.currentScript.src).href;
-  const images={poses:base+'assets/tva-poses-v2.webp',walk:base+'assets/tva-walk-v3.webp'};
+  const images={poses:base+'assets/tva-poses-v2.webp',walk:base+'assets/tva-walk-v3.webp',rig:base+'assets/tva-rig-v1.webp'};
   const decoded={},leftAtlases={},normalized=new WeakSet();
-  const tone='saturate(1.18) contrast(1.08) brightness(.94)';
-  let smoothRenderer;
+  const tone='none';
   function dimensions(image){return [image.naturalWidth||image.width,image.naturalHeight||image.height];}
   function prepare(image){
     const atlas=document.createElement('canvas');[atlas.width,atlas.height]=dimensions(image);
@@ -15,8 +14,6 @@
       for(let i=0;i<p.length;i+=4){
         const alpha=Math.max(0,Math.min(1,(p[i+3]/255-.03)/.84));p[i+3]=Math.round(alpha*255);
         if(!alpha)continue;
-        const l=.2126*p[i]+.7152*p[i+1]+.0722*p[i+2];
-        for(let c=0;c<3;c++)p[i+c]=Math.max(0,Math.min(255,((l+(p[i+c]-l)*1.18-127.5)*1.08+127.5)*.94));
       }
       ctx.putImageData(pixels,0,0);normalized.add(atlas);return atlas;
     }catch{return image;}
@@ -71,7 +68,10 @@
     leftAtlases[sheet]=atlas;return atlas;
   }
   let loaded;
-  function paint(element,state='idle',phase=0,facing=1) {
+  function paint(element,state='idle',phase=0,facing=1,still=false) {
+    if(decoded.rig&&window.ChatAvatarRig){
+      window.ChatAvatarRig.paint(element,decoded.rig,state,phase,facing,{document,now:typeof performance!=='undefined'?performance.now():Date.now(),still});return;
+    }
     const sheet=state==='walk'?'walk':'poses',rows=4;
     const walkPhase=((Math.round(phase*64)/64%16)+16)%16,walkIndex=Math.floor(walkPhase);
     const index=sheet==='walk'?walkIndex:state==='jump'?[5,6][Math.min(1,Math.floor(phase))]:state==='held'?[12,13][Math.floor(phase)%2]:poses[state]??0;
@@ -91,16 +91,7 @@
     ctx.clearRect(0,0,pixels,pixels);
     ctx.globalCompositeOperation='source-over';
     ctx.globalAlpha=1;ctx.filter=normalized.has(image)?'none':tone;
-    let interpolated=false;
-    if(sheet==='walk'&&window.ChatAvatarWalkRenderer&&window.ChatAvatarWalkFlow){
-      try{
-        if(smoothRenderer===undefined)smoothRenderer=window.ChatAvatarWalkRenderer.create(document,window.ChatAvatarWalkFlow,atob);
-        if(smoothRenderer){
-          ctx.filter='none';ctx.drawImage(smoothRenderer.render(image,walkPhase,pixels,align,!normalized.has(image)),0,0,pixels,pixels);interpolated=true;
-        }
-      }catch{smoothRenderer=null;ctx.filter=normalized.has(image)?'none':tone;}
-    }
-    if(!interpolated){draw(index);if(!normalized.has(image))draw(index);}
+    draw(index);if(!normalized.has(image))draw(index);
     ctx.filter='none';
     const reference=sheet==='poses'?standing[index]:null;
     const scaleY=reference?.height ? .915/reference.height : 1,scaleX=reference?scaleY*.98:1;
@@ -113,7 +104,7 @@
     if(element.dataset.frame!==String(index))element.dataset.frame=String(index);
     if(element.dataset.pose!==state)element.dataset.pose=state;
     element.dataset.facing=facing<0?'left':'right';
-    element.dataset.renderer=interpolated?'motion':'frames';
+    element.dataset.renderer='frames';
     element.dataset.phase=String(walkPhase);
     element.dataset.blend='0';element._taviPaintKey=key;
   }
