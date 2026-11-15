@@ -5,13 +5,17 @@
   const images={poses:base+'assets/tva-poses-v2.webp',walk:base+'assets/tva-walk-v3.webp'};
   const decoded={},leftAtlases={},normalized=new WeakSet();
   function dimensions(image){return [image.naturalWidth||image.width,image.naturalHeight||image.height];}
-  function prepare(image){
+  function prepare(image,sheet){
     const atlas=document.createElement('canvas');[atlas.width,atlas.height]=dimensions(image);
     const ctx=atlas.getContext('2d');if(!ctx||typeof ctx.getImageData!=='function')return image;
     try{
       ctx.drawImage(image,0,0);const pixels=ctx.getImageData(0,0,atlas.width,atlas.height),p=pixels.data;
       for(let i=0;i<p.length;i+=4){
-        const alpha=Math.max(0,Math.min(1,(p[i+3]/255-.03)/.84));p[i+3]=Math.round(alpha*255);
+        const alpha=Math.max(0,Math.min(1,(p[i+3]/255-.03)/(sheet==='walk'?.72:.84)));p[i+3]=Math.round(alpha*255);
+        if(sheet==='walk'&&alpha){
+          // Match the stronger painted appearance while leaving every standing pose untouched.
+          for(let c=0;c<3;c++)p[i+c]=Math.max(0,Math.min(255,((p[i+c]-127.5)*1.08+127.5)*.96));
+        }
       }
       ctx.putImageData(pixels,0,0);normalized.add(atlas);return atlas;
     }catch{return image;}
@@ -109,7 +113,7 @@
       if(!loaded)loaded=Promise.all(Object.entries(images).map(([key,url])=>new Promise((resolve,reject)=>{
         const image=new Image(),timer=setTimeout(()=>reject(Error('Die Tavi-Grafik konnte nicht geladen werden. Bitte erneut laden.')),15000);
         image.onload=async()=>{
-          try{if(typeof image.decode==='function')await image.decode();decoded[key]=prepare(image);clearTimeout(timer);resolve();}
+          try{if(typeof image.decode==='function')await image.decode();decoded[key]=prepare(image,key);clearTimeout(timer);resolve();}
           catch(err){clearTimeout(timer);reject(err);}
         };
         image.onerror=()=>{clearTimeout(timer);reject(Error('Tavi-Grafik nicht erreichbar.'));};if(/^https?:/.test(url))image.crossOrigin='anonymous';image.src=url;

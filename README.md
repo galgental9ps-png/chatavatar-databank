@@ -140,8 +140,10 @@ Technische Primärquellen:
 
 Tavi verwendet 16 aufeinanderfolgende Laufphasen mit vollständigem Hin- und Rückschwung der Arme, die zur tatsächlich zurückgelegten Strecke passen. Anlaufen und Anhalten werden beschleunigt bzw. abgebremst. Beim Ziehen nutzt sie eigene Halteposen, beim Loslassen eine Fallpose mit Schwerkraft, anschließend Landung und Aufstehen. Das Fallen funktioniert auch bei geöffnetem Antwortfenster. Bei pausierter oder reduzierter Bewegung wird sie ohne Fallanimation am Boden abgesetzt. Die Demo bietet Lauf- und Sprungknöpfe.
 
-Die Vereinsfarben, Wissensdaten und die Script-Adresse bleiben erhalten. Neue Grafiken: assets/tva-poses-v2.webp und assets/tva-walk-v3.webp; Steuerung: motion-core.js, mascot.js und mascot.css. Die bestehenden alten Grafiken bleiben für ältere Einbindungen vorhanden. Neue Cache-Version: tavi-motion-9. Bei alter Anzeige die Webseite vollständig neu laden.
+Die Vereinsfarben, Wissensdaten und die Script-Adresse bleiben erhalten. Neue Grafiken: assets/tva-poses-v2.webp und assets/tva-walk-v3.webp; Steuerung: motion-core.js, mascot.js und mascot.css. Die bestehenden alten Grafiken bleiben für ältere Einbindungen vorhanden. Neue Cache-Version: tavi-motion-10. Bei alter Anzeige die Webseite vollständig neu laden.
 
 Alle Tests einschließlich Bewegung ausführen: node --test tests/*.test.cjs
 
 Beim Blick nach links wird nur das Brustlogo vorab gegengespiegelt. So bleibt TVA in beiden Richtungen lesbar. Alle Posen verwenden vollständig gezeichnete Figuren aus assets/tva-poses-v2.webp und assets/tva-walk-v3.webp. Die zusammengesetzte Körperteil-Animation wurde zurückgenommen. Die Originalfarben bleiben erhalten; nur störende Transparenz wird korrigiert. Das erhöhte Tempo von 0,62 Figurenbreiten pro Sekunde, die korrigierte Standgröße und die Fallanimation bleiben erhalten. Frühere Dateien bleiben ausschließlich für zwischengespeicherte ältere Einbindungen verfügbar.
+
+Nur die Laufbilder erhalten eine leichte Kontrastverstärkung und deckendere Kanten. Die Farbdaten der Standposen werden nicht verändert.
