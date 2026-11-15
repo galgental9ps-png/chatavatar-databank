@@ -20,26 +20,29 @@ test('Subframe gait progression is retained instead of rounding every step to on
   const s=M.dimensions(1400);
   const a=M.gaitPhaseAtDistance(s.stride*.2625,s.stride),b=M.gaitPhaseAtDistance(s.stride*.265,s.stride);
   assert.ok(b>a);assert.ok(b-a<1);assert.equal(Math.floor(a),Math.floor(b));
-  const last=M.walkFramePlan(15.99999),first=M.walkFramePlan(0);
-  assert.equal(last.next,first.current);assert.ok(last.blend>.999);assert.equal(first.blend,0);
+  assert.equal(M.frameAtDistance(s.stride*.99999,s.stride),15);
+  assert.equal(M.gaitPhaseAtDistance(s.stride,s.stride),0);
 });
-test('Intermediate frames preserve opacity and use the following gait picture',async()=>{
-  const {art,canvas}=await artFixture();canvas.calls.length=0;
-  art.paint(canvas,'walk',2.9,1);
-  const draws=canvas.calls.filter(c=>!c.clear);
-  assert.equal(draws.length,2);assert.ok(draws.every(d=>d.alpha>0&&d.alpha<1));
-  assert.equal(draws[0].alpha+draws[1].alpha,1);assert.equal(draws[1].composite,'lighter');
-  assert.equal(draws[0].args[1],200);assert.equal(draws[1].args[1],300);
-  assert.equal(canvas.context.globalAlpha,1);assert.equal(canvas.context.globalCompositeOperation,'source-over');
+test('Every fractional walking phase draws exactly one full-opacity pose in either direction',async()=>{
+  const {art,canvas}=await artFixture();
+  for(const facing of [1,-1])for(let frame=0;frame<16;frame++)for(const part of [0,.25,.5,.75,.99]){
+    canvas.calls.length=0;art.paint(canvas,'idle',0,facing);canvas.calls.length=0;
+    art.paint(canvas,'walk',frame+part,facing);
+    const draws=canvas.calls.filter(c=>!c.clear);
+    assert.equal(draws.length,1);assert.equal(draws[0].alpha,1);
+    assert.equal(draws[0].composite,'source-over');
+    assert.deepEqual(draws[0].args.slice(1,3),[frame%4*100,Math.floor(frame/4)*100]);
+    assert.equal(canvas.dataset.blend,'0');
+  }
 });
-test('Unchanged pictures are cached while the arms keep moving between keyframes',async()=>{
+test('Unchanged pictures are cached while consecutive walking poses still advance',async()=>{
   const {art,canvas}=await artFixture();const count=canvas.calls.length;
   for(let i=0;i<100;i++)art.paint(canvas,'idle',0,1);
   assert.equal(canvas.calls.length,count);
   art.paint(canvas,'walk',2.2,1);const walking=canvas.calls.length;
   for(let i=0;i<100;i++)art.paint(canvas,'walk',2.2,1);
   assert.equal(canvas.calls.length,walking);
-  art.paint(canvas,'walk',2.3,1);assert.ok(canvas.calls.length>walking);
+  art.paint(canvas,'walk',3.2,1);assert.ok(canvas.calls.length>walking);
 });
 test('The smoother renderer retains the corrected standing height and returns to sharp idle',async()=>{
   const {art,canvas}=await artFixture();art.paint(canvas,'walk',15.9,-1);art.paint(canvas,'idle',0,-1);
@@ -47,15 +50,6 @@ test('The smoother renderer retains the corrected standing height and returns to
   assert.ok(sx<0);assert.ok(Math.abs(.955*sy-.915)<.0001);
   assert.equal(canvas.dataset.sheet,'poses');assert.equal(canvas.dataset.blend,'0');
   assert.equal(canvas.dataset.pose,'idle');
-});
-test('Every part of the interval advances linearly instead of holding the arms still',()=>{
-  for(let frame=0;frame<16;frame++){
-    for(const part of [.125,.25,.5,.75,.875]){
-      const plan=M.walkFramePlan(frame+part);
-      assert.equal(plan.current,frame);assert.equal(plan.blend,part);
-      assert.equal(plan.next,(frame+1)%16);
-    }
-  }
 });
 test('Left-facing poses counter-reflect just the logo and reuse the corrected atlas',async()=>{
   const {art,canvas,canvases}=await artFixture();
@@ -77,12 +71,12 @@ test('Left-facing poses counter-reflect just the logo and reuse the corrected at
   assert.equal(canvases.length,count);assert.equal(canvas.calls.at(-1).args[0],leftImage);
   art.paint(canvas,'idle',0,1);assert.equal(canvas.calls.at(-1).args[0],rightImage);
 });
-test('Both frames around the walking loop seam use the corrected left-facing logo',async()=>{
+test('The walking loop changes from pose sixteen to one with full opacity and the corrected logo',async()=>{
   const {art,canvas}=await artFixture();canvas.calls.length=0;
-  art.paint(canvas,'walk',15.5,-1);
+  art.paint(canvas,'walk',15.99,-1);art.paint(canvas,'walk',16,-1);
   const draws=canvas.calls.filter(c=>!c.clear);
   assert.equal(draws.length,2);assert.equal(draws[0].args[0],draws[1].args[0]);
   assert.deepEqual(draws.map(d=>d.args.slice(1,3)),[[300,300],[0,0]]);
-  assert.equal(draws[0].alpha,.5);assert.equal(draws[1].alpha,.5);
+  assert.equal(draws[0].alpha,1);assert.equal(draws[1].alpha,1);
 });
 

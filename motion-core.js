@@ -17,11 +17,6 @@
   function frameAtDistance(distance, stride) {
     return Math.floor(gaitPhaseAtDistance(distance,stride));
   }
-  function walkFramePlan(phase) {
-    const wrapped=((phase%WALK_FRAMES)+WALK_FRAMES)%WALK_FRAMES, current=Math.floor(wrapped);
-    // Keep the swing moving throughout each interval, including the loop seam.
-    return { current, next:(current+1)%WALK_FRAMES, blend:wrapped-current };
-  }
   function walkStep({ x, target, velocity = 0, distance = 0 }, seconds, size) {
     const dt = clamp(seconds, 0, 0.05), remaining = Math.abs(target - x);
     const direction = Math.sign(target - x), acceleration = size.speed * 3.2;
@@ -41,6 +36,6 @@
     const nextY = Math.max(ground, y + nextVelocity * dt);
     return { y: nextY, velocity: nextVelocity, landed: nextY === ground && nextVelocity < 0 };
   }
-  return { WALK_FRAMES, dimensions, clamp, frameAtDistance, gaitPhaseAtDistance, walkFramePlan, walkStep, fallStep, jumpStep };
+  return { WALK_FRAMES, dimensions, clamp, frameAtDistance, gaitPhaseAtDistance, walkStep, fallStep, jumpStep };
 });
 

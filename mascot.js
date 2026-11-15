@@ -55,10 +55,9 @@
   let loaded;
   function paint(element,state='idle',phase=0,facing=1) {
     const sheet=state==='walk'?'walk':'poses',rows=4;
-    const plan=sheet==='walk'?window.ChatAvatarMotion.walkFramePlan(phase):null;
-    const index=plan?plan.current:state==='jump'?[5,6][Math.min(1,Math.floor(phase))]:state==='held'?[12,13][Math.floor(phase)%2]:poses[state]??0;
-    const blend=plan?Math.round(plan.blend*64)/64:0;
-    const key=[state,index,blend,facing].join(':');
+    const walkIndex=Math.floor(((phase%16)+16)%16);
+    const index=sheet==='walk'?walkIndex:state==='jump'?[5,6][Math.min(1,Math.floor(phase))]:state==='held'?[12,13][Math.floor(phase)%2]:poses[state]??0;
+    const key=[state,index,facing].join(':');
     if(element._taviPaintKey===key)return;
     const original=decoded[sheet];if(!original)return;
     const image=facing<0?leftAtlas(sheet):original;
@@ -72,12 +71,9 @@
     };
     ctx.clearRect(0,0,pixels,pixels);
     ctx.globalCompositeOperation='source-over';
-    ctx.globalAlpha=1-blend;draw(index);
-    if(blend>0){
-      // Add premultiplied contributions: overlapping pixels stay fully opaque.
-      ctx.globalCompositeOperation='lighter';ctx.globalAlpha=blend;draw(plan.next);
-    }
-    ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
+    // One complete, opaque pose: crossfading limbs diluted their color and alpha.
+    // Sixteen consecutive drawings supply the inbetweens; travel stays subpixel-smooth.
+    ctx.globalAlpha=1;draw(index);
     const reference=sheet==='poses'?standing[index]:null;
     const scaleY=reference?.height ? .915/reference.height : 1,scaleX=reference?scaleY*.98:1;
     const shiftY=reference?.height ? .958-(.94+scaleY*(reference.bottom-.94)) : 0;
@@ -89,7 +85,7 @@
     if(element.dataset.frame!==String(index))element.dataset.frame=String(index);
     if(element.dataset.pose!==state)element.dataset.pose=state;
     element.dataset.facing=facing<0?'left':'right';
-    element.dataset.blend=String(blend);element._taviPaintKey=key;
+    element.dataset.blend='0';element._taviPaintKey=key;
   }
   window.ChatAvatarArt={
     images,
