@@ -14,10 +14,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --test tests/core.test.cjs
+      - run: node --test tests/*.test.cjs
       - name: Validate JavaScript syntax
         run: |
           node --check avatar.js
+          node --check mascot.js
+          node --check motion-core.js
           node --check admin.js
           node --check demo.js
           node --check github-publisher.js
+

@@ -134,3 +134,12 @@ Technische Primärquellen:
 - https://docs.github.com/en/rest/repos/contents
 - https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages
 
+
+
+## Bewegung Version 2
+
+Tavi verwendet acht separate Laufphasen, die zur tatsächlich zurückgelegten Strecke passen. Anlaufen und Anhalten werden beschleunigt bzw. abgebremst. Beim Ziehen nutzt sie eigene Halteposen, beim Loslassen eine Fallpose mit Schwerkraft, anschließend Landung und Aufstehen. Das Fallen funktioniert auch bei geöffnetem Antwortfenster. Bei pausierter oder reduzierter Bewegung wird sie ohne Fallanimation am Boden abgesetzt. Die Demo bietet Lauf- und Sprungknöpfe.
+
+Die Vereinsfarben, Wissensdaten und die Script-Adresse bleiben erhalten. Neue Grafiken: assets/tva-poses-v2.webp und assets/tva-walk-v2.webp; Steuerung: motion-core.js, mascot.js und mascot.css. Die bestehenden alten Grafiken bleiben für ältere Einbindungen vorhanden. Neue Cache-Version: tavi-motion-2. Bei alter Anzeige die Webseite vollständig neu laden.
+
+Alle Tests einschließlich Bewegung ausführen: node --test tests/*.test.cjs

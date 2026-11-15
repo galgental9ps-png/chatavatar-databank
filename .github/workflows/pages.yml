@@ -37,8 +37,10 @@ jobs:
           node-version: '22'
       - name: Check application before publishing
         run: |
-          node --test tests/core.test.cjs
+          node --test tests/*.test.cjs
           node --check avatar.js
+          node --check mascot.js
+          node --check motion-core.js
           node --check admin.js
           node --check demo.js
           node --check github-publisher.js
@@ -52,3 +54,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+

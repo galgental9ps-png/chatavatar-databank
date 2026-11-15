@@ -72,3 +72,4 @@ test('GitHub publish is one atomic commit for JSON and offline data, without for
 test('Concurrent remote knowledge edits stop publication before any write', async () => {
   const { publisher, calls } = mockPublisher('changed-remote'); publisher.sha = 'old-sha'; await assert.rejects(() => publisher.publish(data(), K.bundle(data())), /seit dem Laden geändert/); assert.ok(calls.every(c => c.method === 'GET'));
 });
+

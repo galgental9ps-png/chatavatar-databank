@@ -108,3 +108,4 @@
   const bundle = pack => '/* Generated offline fallback; never put secrets in knowledge. */\nglobalThis.ChatAvatarDefaultKnowledge = ' + JSON.stringify(validate(pack), null, 2).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029') + ';\n';
   return { MAX_BYTES, validate, normalize, slug, safeUrl, active, stale, search, importText, parseCsv, todayBerlin, bundle };
 });
+

@@ -7,6 +7,11 @@
   document.getElementById('source-count').textContent = new Set(pack.entries.map(e => e.sourceUrl).filter(Boolean)).size;
   document.getElementById('knowledge-date').textContent = '· Wissensstand ' + pack.updatedAt.split('-').reverse().join('.');
   document.getElementById('open-avatar').onclick = () => instance.open();
+  const walk=document.getElementById('demo-walk'),jump=document.getElementById('demo-jump');
+  if(instance.motion.matches){walk.disabled=true;jump.disabled=true;}
+  function resume(){if(instance.paused&&!instance.motion.matches)instance.setPaused(false);if(instance.hidden){instance.hidden=false;instance.character.hidden=false;instance.launcher.hidden=true;}}
+  walk.onclick=()=>{resume();const max=Math.max(0,innerWidth-instance.size().width-8);instance.walkTo(instance.x>max/2?8:max);};
+  jump.onclick=()=>{resume();instance.jump();};
   for (const button of document.querySelectorAll('[data-question]')) button.onclick = () => { instance.open(); instance.answer(button.dataset.question); };
   const descriptions = { service: 'Öffnungszeiten, Kontakt & Anfahrt', kinder: 'Kurse, Schnuppern & Geburtstage', fitness: 'Studio, Group Fitness & Cycling', mitglied: 'Beitritt, Beiträge & Verwaltung', sport: 'Abteilungen & sportliche Vielfalt', gesundheit: 'REHA Sport, Wellness & Firmensport', verein: 'Menschen & Verein' };
   for (const c of pack.categories) {
@@ -26,4 +31,5 @@
     catch { const selection = getSelection(), range = document.createRange(); range.selectNodeContents(document.getElementById('embed-code')); selection.removeAllRanges(); selection.addRange(range); document.getElementById('copy-code').textContent = 'Markiert – bitte kopieren'; }
   };
 })();
+
 
