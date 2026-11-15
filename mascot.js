@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   const base=new URL('.',document.currentScript.src).href;
-  const images={poses:base+'assets/tva-poses-v2.webp',walk:base+'assets/tva-walk-v3.webp',actions:base+'assets/tva-actions-v1.webp'};
+  const images={poses:base+'assets/tva-poses-v2.webp',walk:base+'assets/tva-walk-v4.webp',actions:base+'assets/tva-actions-v1.webp'};
   const decoded={},leftAtlases={},normalized=new WeakSet();
   function dimensions(image){return [image.naturalWidth||image.width,image.naturalHeight||image.height];}
   function prepare(image,sheet){
@@ -11,11 +11,8 @@
     try{
       ctx.drawImage(image,0,0);const pixels=ctx.getImageData(0,0,atlas.width,atlas.height),p=pixels.data;
       for(let i=0;i<p.length;i+=4){
-        const alpha=Math.max(0,Math.min(1,(p[i+3]/255-.03)/(sheet==='walk'?.72:.84)));p[i+3]=Math.round(alpha*255);
-        if(sheet==='walk'&&alpha){
-          // Match the stronger painted appearance while leaving every standing pose untouched.
-          for(let c=0;c<3;c++)p[i+c]=Math.max(0,Math.min(255,((p[i+c]-127.5)*1.08+127.5)*.96));
-        }
+        // Clear the old low-alpha matte without tinting the new artwork.
+        const alpha=Math.max(0,Math.min(1,(p[i+3]/255-(sheet==='walk'?.08:.03))/(sheet==='walk'?.78:.84)));p[i+3]=Math.round(alpha*255);
       }
       ctx.putImageData(pixels,0,0);normalized.add(atlas);return sheet==='actions'?actionAtlas(atlas):atlas;
     }catch{return sheet==='actions'?actionAtlas(image):image;}
@@ -38,9 +35,9 @@
     10:{height:.930,bottom:.958},11:{height:.920,bottom:.955},15:{height:.936,bottom:.968}
   };
   // Subpixel anchor differences in the artwork should not shake the whole body.
-  const headX=[.6115,.6102,.6102,.6115,.6115,.6102,.6102,.6115,.6115,.6102,.6102,.6115,.6115,.6102,.6134,.6115];
-  const floorY=[.9650,.9618,.9650,.9682,.9712,.9681,.9712,.9617,.9681,.9681,.9744,.9712,.9682,.9682,.9682,.9682];
-  const walkScale=.98;
+  const headX=[.6051,.6070,.6070,.6083,.6051,.6038,.6070,.6051,.6051,.6070,.6070,.6051,.6051,.6038,.6070,.6051];
+  const floorY=[.9682,.9682,.9713,.9745,.9744,.9744,.9776,.9681,.9712,.9712,.9744,.9744,.9713,.9713,.9713,.9713];
+  const walkScale=.962792;
   // Tight bounds include the lettering and a small blue margin, never the body outline.
   const logos={
     poses:[
@@ -55,14 +52,14 @@
     ],
     actions:[[.5651,.3969,.0874,.0412],[.5157,.3965,.0827,.0381],[.4585,.4199,.0845,.0372],[.4436,.4307,.0891,.0371]],
     walk:[
-      [.5987,.4363,.0796,.0382],[.6006,.4363,.0767,.0382],
-      [.6006,.4363,.0799,.0382],[.6019,.4331,.0764,.0414],
-      [.6019,.4345,.0732,.0415],[.6006,.4345,.0767,.0415],
-      [.6006,.4345,.0799,.0415],[.6019,.4345,.0764,.0415],
-      [.6019,.4377,.0732,.0415],[.6038,.4377,.0735,.0415],
-      [.6070,.4377,.0735,.0415],[.6051,.4377,.0732,.0415],
-      [.6019,.4395,.0732,.0414],[.6006,.4395,.0767,.0414],
-      [.6038,.4395,.0735,.0414],[.6019,.4395,.0796,.0414]
+      [.5987,.4363,.0796,.0414],[.6006,.4363,.0767,.0414],
+      [.6006,.4363,.0799,.0414],[.6019,.4363,.0796,.0414],
+      [.6019,.4345,.0764,.0415],[.6006,.4345,.0831,.0447],
+      [.6006,.4345,.0831,.0447],[.6051,.4345,.0796,.0447],
+      [.6019,.4377,.0796,.0415],[.6038,.4377,.0799,.0415],
+      [.6038,.4377,.0799,.0415],[.6051,.4377,.0796,.0415],
+      [.6019,.4395,.0764,.0414],[.6006,.4395,.0831,.0414],
+      [.6006,.4395,.0799,.0414],[.6019,.4363,.0828,.0446]
     ]
   };
   function leftAtlas(sheet){

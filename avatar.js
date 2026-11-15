@@ -4,7 +4,7 @@
   if (window.ChatAvatar) return;
   const script = document.currentScript;
   const BASE = new URL('.', script.src).href;
-  const VERSION = 'tavi-motion-11';
+  const VERSION = 'tavi-motion-12';
   const deps = new Map();
   function loadScript(url) {
     if (!deps.has(url)) deps.set(url, new Promise((resolve, reject) => { const s = document.createElement('script'); s.src = url; s.onload = resolve; s.onerror = () => reject(Error('Datei konnte nicht geladen werden: ' + url)); document.head.append(s); }));
@@ -18,7 +18,7 @@
   function el(tag, cls, text) { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
   class Mascot {
     constructor(options = {}) {
-      this.options = options; this.x = Math.max(8, innerWidth - 210); this.y = 10; this.state = 'idle'; this.facing = 1; this.opened = false; this.paused = false; this.voice = false; this.hidden = false; this.destroyed = false; this.category = ''; this.timers = new Set(); this.frame = 0; this.walkDistance = 0; this.velocity = 0; this.fallVelocity = 0; this.nextWalk = performance.now() + 4500; this.nextAction = performance.now()+28000+Math.random()*15000; this.lastAction='cartwheel'; this.action=null; this.last = 0; this.stateUntil = Infinity;
+      this.options = options; this.x = Math.max(8, innerWidth - 210); this.y = 10; this.state = 'idle'; this.facing = 1; this.opened = false; this.paused = false; this.voice = false; this.hidden = false; this.destroyed = false; this.category = ''; this.timers = new Set(); this.frame = 0; this.walkDistance = 0; this.velocity = 0; this.fallVelocity = 0; this.nextWalk = performance.now() + 4500; this.nextAction = performance.now()+28000+Math.random()*15000; this.action=null; this.last = 0; this.stateUntil = Infinity;
       this.motion = matchMedia('(prefers-reduced-motion: reduce)');
       this.onMotion = () => this.setPaused(this.motion.matches);
       this.motion.addEventListener('change', this.onMotion); this.paused = this.motion.matches;
@@ -113,7 +113,7 @@
       const paused=String(this.paused);if(this.character.dataset.paused!==paused)this.character.dataset.paused=paused;
     }
     position() {
-      const s=this.size(),minY=this.action?.type==='cartwheel'?-s.height*.2:s.ground,maxY=Math.max(s.ground,innerHeight-s.height-4);
+      const s=this.size(),minY=s.ground,maxY=Math.max(s.ground,innerHeight-s.height-4);
       this.x=Math.max(0,Math.min(Math.max(0,innerWidth-s.width),this.x));this.y=Math.max(minY,Math.min(maxY,this.y));
       if(this.drawnSize!==s.width){this.character.style.width=s.width+'px';this.character.style.height=s.height+'px';this.drawnSize=s.width;}
       const transform='translate3d('+(Math.round(this.x*100)/100)+'px,'+(-Math.round(this.y*100)/100)+'px,0)';
@@ -142,12 +142,13 @@
       this.velocity=0;this.jumpVelocity=440;this.nextAction=Math.max(this.nextAction,performance.now()+20000);this.setState('crouch');return true;
     }
     fly(){return this.startAction('fly');}
-    cartwheel(){return this.startAction('cartwheel');}
+    cartwheel(){return false;}
     startAction(type,automatic=false){
+      if(type!=='fly')return false;
       const M=window.ChatAvatarMotion;if(!M)return false;
       const plan=M.actionPlan(type,this.x,this.size(),innerWidth,innerHeight,this.facing);
       if(!plan||!this.prepareMovement())return false;
-      plan.automatic=automatic;this.action=plan;this.lastAction=type;this.facing=plan.facing;this.velocity=0;this.fallVelocity=0;
+      plan.automatic=automatic;this.action=plan;this.facing=plan.facing;this.velocity=0;this.fallVelocity=0;
       this.character.dataset.action=type;this.character.dataset.actionProgress='0';
       this.applyActionRotation(0);this.setState('crouch');return true;
     }
@@ -164,11 +165,10 @@
       this.setState(this.y>this.size().ground+.5?'fall':'idle');this.position();this.nextAction=performance.now()+25000;
     }
     finishAction(){
-      const type=this.action.type,key=type==='fly'?'flightCount':'cartwheelCount';
-      const followUp=type==='fly'&&this.action.automatic&&window.ChatAvatarMotion.actionPlan('cartwheel',this.x,this.size(),innerWidth,innerHeight);
+      const key='flightCount';
       this.character.dataset[key]=String((Number(this.character.dataset[key])||0)+1);
       this.clearAction();this.character.dataset.actionProgress='1';this.land();this.position();
-      this.nextAction=performance.now()+(followUp?1300:45000+Math.random()*30000);
+      this.nextAction=performance.now()+45000+Math.random()*30000;
     }
     setPaused(value) {
       this.clearAction();
@@ -225,8 +225,7 @@
               this.position();
             }
           } else if(this.state==='idle'&&now>this.nextAction) {
-            const type=this.lastAction==='fly'?'cartwheel':'fly';
-            if(!this.startAction(type,true)&&!this.startAction(type==='fly'?'cartwheel':'fly',true))this.nextAction=now+20000;
+            if(!this.startAction('fly',true))this.nextAction=now+20000;
           } else if(this.state==='idle'&&now>this.nextWalk) {
             const max=Math.max(0,innerWidth-s.width-8),distance=Math.min(max,140+Math.random()*250);
             const target=this.x>max/2?Math.max(8,this.x-distance):Math.min(max,this.x+distance);

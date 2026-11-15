@@ -6,7 +6,7 @@ async function artFixture(options={}){
   function canvas(){
     const calls=[],transforms=[],context={globalAlpha:1,globalCompositeOperation:'source-over',clearRect(){calls.push({clear:true});},drawImage(...args){calls.push({alpha:this.globalAlpha,composite:this.globalCompositeOperation,args});},save(){transforms.push(['save']);},restore(){transforms.push(['restore']);},translate(...args){transforms.push(['translate',...args]);},scale(...args){transforms.push(['scale',...args]);},rotate(...args){transforms.push(['rotate',...args]);}};
     if(!options.noPixels){
-      context.getImageData=()=>({data:new Uint8ClampedArray([21,55,133,253,200,180,160,1,245,245,245,255,80,130,210,128])});
+      context.getImageData=()=>({data:new Uint8ClampedArray([21,55,133,253,200,180,160,1,245,245,245,255,80,130,210,128,130,130,130,18])});
       context.putImageData=pixels=>{context.prepared=Array.from(pixels.data);};
     }
     const result={style:{},dataset:{},width:0,height:0,setAttribute(){},getContext(){return context;},calls,context,transforms};canvases.push(result);return result;
@@ -55,14 +55,13 @@ test('Source alpha is made solid without warming or darkening the original palet
   assert.deepEqual(source.slice(0,3),[21,55,133]);
   assert.equal(canvas.context.filter,'none');
 });
-test('Only walking colors and edges are strengthened; standing artwork keeps its source colors',async()=>{
+test('The clean walking artwork keeps its source colors and removes low-alpha gray matte',async()=>{
   const {canvases}=await artFixture();
   const source=word=>canvases.find(c=>c.context.prepared&&c.calls.some(d=>d.args?.[0]?.srcValue?.includes(word))).context.prepared;
   const idle=source('poses'),walk=source('walk');
   assert.deepEqual(idle.slice(0,3),[21,55,133]);
-  assert.ok(walk[0]<idle[0]&&walk[1]<idle[1]);
-  assert.ok(walk[2]>120);assert.equal(walk[3],255);assert.equal(walk[7],0);
-  assert.ok(walk[15]>idle[15]);
+  assert.deepEqual(walk.slice(0,3),[21,55,133]);assert.equal(walk[3],255);assert.equal(walk[7],0);
+  assert.equal(walk[19],0);assert.ok(idle[19]>0);
 });
 test('Cached rig globals cannot replace the complete illustrated character',async()=>{
   const rendered=[];

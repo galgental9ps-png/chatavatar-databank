@@ -17,14 +17,13 @@ async function fixture(width=1400,height=900){
   function step(seconds){const count=Math.ceil(seconds/.02);for(let i=0;i<count;i++){clock.now+=20;avatar.tick(clock.now);}}
   return {avatar,motion,document,clock,step};
 }
-test('Manual flight and cartwheel complete once, land safely and restore the normal sprite transform',async()=>{
+test('Manual flight completes once, lands safely and restores the normal sprite transform',async()=>{
   const {avatar,step}=await fixture();
   assert.equal(avatar.fly(),true);step(3.5);
   assert.equal(avatar.action,null);assert.equal(avatar.character.dataset.flightCount,'1');assert.equal(avatar.character.dataset.landingCount,'1');
   assert.equal(avatar.y,avatar.size().ground);assert.equal(avatar.sprite.style.transform,'none');
-  assert.equal(avatar.cartwheel(),true);step(2.8);
-  assert.equal(avatar.action,null);assert.equal(avatar.character.dataset.cartwheelCount,'1');assert.equal(avatar.character.dataset.landingCount,'2');
-  assert.equal(avatar.y,avatar.size().ground);assert.equal(avatar.sprite.style.transform,'none');
+  assert.equal(avatar.cartwheel(),false);assert.equal(avatar.startAction('cartwheel'),false);step(2.8);
+  assert.equal(avatar.action,null);assert.equal(avatar.character.dataset.cartwheelCount,undefined);assert.equal(avatar.character.dataset.landingCount,'1');
 });
 test('Automatic actions respect chat, dragging, pause, hidden pages and reduced motion',async()=>{
   const {avatar,motion,document,clock}=await fixture();
@@ -36,9 +35,9 @@ test('Automatic actions respect chat, dragging, pause, hidden pages and reduced 
   avatar.drag=null;motion.matches=false;avatar.nextAction=0;clock.now+=100;avatar.tick(clock.now);
   assert.equal(avatar.action.type,'fly');
 });
-test('An automatic flight lands before the following cartwheel, then waits before the next action',async()=>{
+test('Automatic flight waits before the next action and never schedules a cartwheel',async()=>{
   const {avatar,clock,step}=await fixture();avatar.nextAction=0;clock.now=20;avatar.tick(clock.now);step(6.4);
-  assert.equal(avatar.character.dataset.flightCount,'1');assert.equal(avatar.character.dataset.cartwheelCount,'1');
+  assert.equal(avatar.character.dataset.flightCount,'1');assert.equal(avatar.character.dataset.cartwheelCount,undefined);
   assert.equal(avatar.action,null);assert.ok(avatar.nextAction>clock.now+40000);
 });
 test('Pausing cancels an airborne action immediately without leaving a rotated or floating avatar',async()=>{
