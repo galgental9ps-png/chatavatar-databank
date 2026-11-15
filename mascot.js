@@ -3,7 +3,24 @@
   'use strict';
   const base=new URL('.',document.currentScript.src).href;
   const images={poses:base+'assets/tva-poses-v2.webp',walk:base+'assets/tva-walk-v3.webp'};
-  const decoded={},leftAtlases={};
+  const decoded={},leftAtlases={},normalized=new WeakSet();
+  const tone='saturate(1.18) contrast(1.08) brightness(.94)';
+  let smoothRenderer;
+  function dimensions(image){return [image.naturalWidth||image.width,image.naturalHeight||image.height];}
+  function prepare(image){
+    const atlas=document.createElement('canvas');[atlas.width,atlas.height]=dimensions(image);
+    const ctx=atlas.getContext('2d');if(!ctx||typeof ctx.getImageData!=='function')return image;
+    try{
+      ctx.drawImage(image,0,0);const pixels=ctx.getImageData(0,0,atlas.width,atlas.height),p=pixels.data;
+      for(let i=0;i<p.length;i+=4){
+        const alpha=Math.max(0,Math.min(1,(p[i+3]/255-.03)/.84));p[i+3]=Math.round(alpha*255);
+        if(!alpha)continue;
+        const l=.2126*p[i]+.7152*p[i+1]+.0722*p[i+2];
+        for(let c=0;c<3;c++)p[i+c]=Math.max(0,Math.min(255,((l+(p[i+c]-l)*1.18-127.5)*1.08+127.5)*.94));
+      }
+      ctx.putImageData(pixels,0,0);normalized.add(atlas);return atlas;
+    }catch{return image;}
+  }
   const poses={idle:0,wave:1,talk:2,point:3,crouch:4,fall:7,land:8,recover:9,celebrate:10,think:11,held:12,rest:14,surprised:15};
   const standing={
     0:{height:.955,bottom:.994},1:{height:.952,bottom:.997},
@@ -40,7 +57,7 @@
   function leftAtlas(sheet){
     if(leftAtlases[sheet])return leftAtlases[sheet];
     const image=decoded[sheet],atlas=document.createElement('canvas');
-    atlas.width=image.naturalWidth;atlas.height=image.naturalHeight;
+    [atlas.width,atlas.height]=dimensions(image);
     const ctx=atlas.getContext('2d'),cellWidth=atlas.width/4,cellHeight=atlas.height/4;
     ctx.drawImage(image,0,0);
     logos[sheet].forEach(([x,y,width,height],index)=>{
@@ -50,19 +67,21 @@
       ctx.save();ctx.translate(2*sx+sw,0);ctx.scale(-1,1);
       ctx.drawImage(image,sx,sy,sw,sh,sx,sy,sw,sh);ctx.restore();
     });
+    if(normalized.has(image))normalized.add(atlas);
     leftAtlases[sheet]=atlas;return atlas;
   }
   let loaded;
   function paint(element,state='idle',phase=0,facing=1) {
     const sheet=state==='walk'?'walk':'poses',rows=4;
-    const walkIndex=Math.floor(((phase%16)+16)%16);
+    const walkPhase=((Math.round(phase*64)/64%16)+16)%16,walkIndex=Math.floor(walkPhase);
     const index=sheet==='walk'?walkIndex:state==='jump'?[5,6][Math.min(1,Math.floor(phase))]:state==='held'?[12,13][Math.floor(phase)%2]:poses[state]??0;
-    const key=[state,index,facing].join(':');
+    const key=[state,sheet==='walk'?walkPhase:index,facing].join(':');
     if(element._taviPaintKey===key)return;
     const original=decoded[sheet];if(!original)return;
     const image=facing<0?leftAtlas(sheet):original;
     const ctx=element.getContext('2d');if(!ctx)return;
-    const pixels=element.width,cellWidth=original.naturalWidth/4,cellHeight=original.naturalHeight/rows;
+    const pixels=element.width,[width,height]=dimensions(original),cellWidth=width/4,cellHeight=height/rows;
+    const align=frame=>[.62-headX[frame]*walkScale,.958-floorY[frame]*walkScale,walkScale];
     const draw=frame=>{
       const scale=sheet==='walk'?walkScale:1;
       const dx=sheet==='walk'?(.62-headX[frame]*scale)*pixels:0;
@@ -71,9 +90,18 @@
     };
     ctx.clearRect(0,0,pixels,pixels);
     ctx.globalCompositeOperation='source-over';
-    // One complete, opaque pose: crossfading limbs diluted their color and alpha.
-    // Sixteen consecutive drawings supply the inbetweens; travel stays subpixel-smooth.
-    ctx.globalAlpha=1;draw(index);
+    ctx.globalAlpha=1;ctx.filter=normalized.has(image)?'none':tone;
+    let interpolated=false;
+    if(sheet==='walk'&&window.ChatAvatarWalkRenderer&&window.ChatAvatarWalkFlow){
+      try{
+        if(smoothRenderer===undefined)smoothRenderer=window.ChatAvatarWalkRenderer.create(document,window.ChatAvatarWalkFlow,atob);
+        if(smoothRenderer){
+          ctx.filter='none';ctx.drawImage(smoothRenderer.render(image,walkPhase,pixels,align,!normalized.has(image)),0,0,pixels,pixels);interpolated=true;
+        }
+      }catch{smoothRenderer=null;ctx.filter=normalized.has(image)?'none':tone;}
+    }
+    if(!interpolated){draw(index);if(!normalized.has(image))draw(index);}
+    ctx.filter='none';
     const reference=sheet==='poses'?standing[index]:null;
     const scaleY=reference?.height ? .915/reference.height : 1,scaleX=reference?scaleY*.98:1;
     const shiftY=reference?.height ? .958-(.94+scaleY*(reference.bottom-.94)) : 0;
@@ -85,6 +113,8 @@
     if(element.dataset.frame!==String(index))element.dataset.frame=String(index);
     if(element.dataset.pose!==state)element.dataset.pose=state;
     element.dataset.facing=facing<0?'left':'right';
+    element.dataset.renderer=interpolated?'motion':'frames';
+    element.dataset.phase=String(walkPhase);
     element.dataset.blend='0';element._taviPaintKey=key;
   }
   window.ChatAvatarArt={
@@ -93,10 +123,10 @@
       if(!loaded)loaded=Promise.all(Object.entries(images).map(([key,url])=>new Promise((resolve,reject)=>{
         const image=new Image(),timer=setTimeout(()=>reject(Error('Die Tavi-Grafik konnte nicht geladen werden. Bitte erneut laden.')),15000);
         image.onload=async()=>{
-          try{if(typeof image.decode==='function')await image.decode();decoded[key]=image;clearTimeout(timer);resolve();}
+          try{if(typeof image.decode==='function')await image.decode();decoded[key]=prepare(image);clearTimeout(timer);resolve();}
           catch(err){clearTimeout(timer);reject(err);}
         };
-        image.onerror=()=>{clearTimeout(timer);reject(Error('Tavi-Grafik nicht erreichbar.'));};image.src=url;
+        image.onerror=()=>{clearTimeout(timer);reject(Error('Tavi-Grafik nicht erreichbar.'));};if(/^https?:/.test(url))image.crossOrigin='anonymous';image.src=url;
       })));
       return loaded;
     },
