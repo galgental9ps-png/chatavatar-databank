@@ -55,13 +55,16 @@ test('Source alpha is made solid without warming or darkening the original palet
   assert.deepEqual(source.slice(0,3),[21,55,133]);
   assert.equal(canvas.context.filter,'none');
 });
-test('Fractional walking phases reach the joint renderer without being rounded to pictures',async()=>{
+test('Cached rig globals cannot replace the complete illustrated character',async()=>{
   const rendered=[];
   const globals={ChatAvatarRig:{paint(...args){rendered.push(args);}}};
   const {art,canvas}=await artFixture({globals});
-  for(const phase of [2,2.25,2.5,2.75])art.paint(canvas,'walk',phase,-1);
-  assert.deepEqual(rendered.filter(r=>r[2]==='walk').map(r=>r[3]),[2,2.25,2.5,2.75]);
-  assert.ok(rendered.filter(r=>r[2]==='walk').every(r=>r[4]===-1));
+  for(const state of ['idle','walk','held','fall','wave']){
+    canvas.calls.length=0;art.paint(canvas,state,0,1);
+    const draws=canvas.calls.filter(c=>!c.clear);assert.ok(draws.length<=1);
+    assert.equal(canvas.dataset.renderer,'frames');assert.notEqual(canvas.dataset.sheet,'rig');
+  }
+  assert.equal(rendered.length,0);assert.deepEqual(Object.keys(art.images),['poses','walk']);
 });
 test('A device without motion interpolation still receives solid colored poses',async()=>{
   const globals={ChatAvatarWalkFlow:{frames:16},ChatAvatarWalkRenderer:{create(){return null;}}};

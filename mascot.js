@@ -2,9 +2,8 @@
 (function () {
   'use strict';
   const base=new URL('.',document.currentScript.src).href;
-  const images={poses:base+'assets/tva-poses-v2.webp',walk:base+'assets/tva-walk-v3.webp',rig:base+'assets/tva-rig-v1.webp'};
+  const images={poses:base+'assets/tva-poses-v2.webp',walk:base+'assets/tva-walk-v3.webp'};
   const decoded={},leftAtlases={},normalized=new WeakSet();
-  const tone='none';
   function dimensions(image){return [image.naturalWidth||image.width,image.naturalHeight||image.height];}
   function prepare(image){
     const atlas=document.createElement('canvas');[atlas.width,atlas.height]=dimensions(image);
@@ -13,7 +12,6 @@
       ctx.drawImage(image,0,0);const pixels=ctx.getImageData(0,0,atlas.width,atlas.height),p=pixels.data;
       for(let i=0;i<p.length;i+=4){
         const alpha=Math.max(0,Math.min(1,(p[i+3]/255-.03)/.84));p[i+3]=Math.round(alpha*255);
-        if(!alpha)continue;
       }
       ctx.putImageData(pixels,0,0);normalized.add(atlas);return atlas;
     }catch{return image;}
@@ -69,19 +67,15 @@
   }
   let loaded;
   function paint(element,state='idle',phase=0,facing=1,still=false) {
-    if(decoded.rig&&window.ChatAvatarRig){
-      window.ChatAvatarRig.paint(element,decoded.rig,state,phase,facing,{document,now:typeof performance!=='undefined'?performance.now():Date.now(),still});return;
-    }
     const sheet=state==='walk'?'walk':'poses',rows=4;
-    const walkPhase=((Math.round(phase*64)/64%16)+16)%16,walkIndex=Math.floor(walkPhase);
+    const walkPhase=((phase%16)+16)%16,walkIndex=Math.floor(walkPhase);
     const index=sheet==='walk'?walkIndex:state==='jump'?[5,6][Math.min(1,Math.floor(phase))]:state==='held'?[12,13][Math.floor(phase)%2]:poses[state]??0;
-    const key=[state,sheet==='walk'?walkPhase:index,facing].join(':');
+    const key=[state,index,facing].join(':');
     if(element._taviPaintKey===key)return;
     const original=decoded[sheet];if(!original)return;
     const image=facing<0?leftAtlas(sheet):original;
     const ctx=element.getContext('2d');if(!ctx)return;
     const pixels=element.width,[width,height]=dimensions(original),cellWidth=width/4,cellHeight=height/rows;
-    const align=frame=>[.62-headX[frame]*walkScale,.958-floorY[frame]*walkScale,walkScale];
     const draw=frame=>{
       const scale=sheet==='walk'?walkScale:1;
       const dx=sheet==='walk'?(.62-headX[frame]*scale)*pixels:0;
@@ -90,7 +84,8 @@
     };
     ctx.clearRect(0,0,pixels,pixels);
     ctx.globalCompositeOperation='source-over';
-    ctx.globalAlpha=1;ctx.filter=normalized.has(image)?'none':tone;
+    // Draw one complete illustrated character, keeping its original anatomy and colors.
+    ctx.globalAlpha=1;ctx.filter='none';
     draw(index);if(!normalized.has(image))draw(index);
     ctx.filter='none';
     const reference=sheet==='poses'?standing[index]:null;
