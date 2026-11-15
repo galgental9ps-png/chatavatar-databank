@@ -18,14 +18,19 @@ async function fixture(width=1400,height=900){
   function step(seconds){const count=Math.ceil(seconds/.02);for(let i=0;i<count;i++){clock.now+=20;avatar.tick(clock.now);}}
   return {avatar,motion,document,clock,step,paints};
 }
-test('Starting a walk eases out of standing for a quarter-second without changing cruising speed',async()=>{
+test('Walking turns through real poses, starts gently, cruises at the same speed and settles before idle',async()=>{
   const {avatar,step,paints}=await fixture();
-  avatar.setState('idle');assert.equal(avatar.walkTo(200),true);
-  assert.equal(paints.at(-1)[5].from,'idle');assert.equal(paints.at(-1)[5].progress,0);
-  step(.12);assert.ok(paints.at(-1)[5].progress>.4&&paints.at(-1)[5].progress<.6);
-  step(.14);assert.equal(paints.at(-1)[5],null);
-  step(.6);assert.equal(avatar.velocity,avatar.size().speed);assert.equal(paints.at(-1)[5],null);
-  avatar.setPaused(true);assert.equal(avatar.walkEntry,null);
+  avatar.setState('idle');assert.equal(avatar.walkTo(1000),true);
+  assert.equal(paints.at(-1)[1],'walk-turn');assert.equal(paints.at(-1)[2],0);
+  step(.3);assert.equal(paints.at(-1)[1],'walk-turn');assert.ok(paints.at(-1)[2]>.3&&paints.at(-1)[2]<.6);
+  step(.4);assert.equal(paints.at(-1)[1],'walk');
+  step(.6);assert.equal(avatar.velocity,avatar.size().speed);
+  step(3);assert.ok(paints.some(p=>p[1]==='walk-stop'));
+  assert.equal(avatar.state,'idle');assert.equal(avatar.x,1000);assert.equal(avatar.velocity,0);
+  avatar.nextWalk=Infinity;assert.equal(avatar.walkTo(800),true);
+  assert.equal(paints.at(-1)[1],'walk-start');
+  step(.5);assert.equal(paints.at(-1)[1],'walk');
+  avatar.setPaused(true);assert.equal(avatar.walkEntry,null);assert.equal(avatar.walkExit,null);
 });
 test('Manual flight completes once, lands safely and restores the normal sprite transform',async()=>{
   const {avatar,step}=await fixture();
@@ -34,6 +39,14 @@ test('Manual flight completes once, lands safely and restores the normal sprite 
   assert.equal(avatar.y,avatar.size().ground);assert.equal(avatar.sprite.style.transform,'none');
   assert.equal(avatar.cartwheel(),false);assert.equal(avatar.startAction('cartwheel'),false);step(2.8);
   assert.equal(avatar.action,null);assert.equal(avatar.character.dataset.cartwheelCount,undefined);assert.equal(avatar.character.dataset.landingCount,'1');
+});
+test('Chat and flight can interrupt the new walking transitions without leaving a delayed restart',async()=>{
+  const {avatar,step}=await fixture();
+  avatar.walkTo(800);step(.1);assert.ok(avatar.walkEntry);
+  avatar.open();assert.equal(avatar.walkEntry,null);step(.8);assert.equal(avatar.opened,true);
+  avatar.close();avatar.walkTo(800);step(.1);assert.ok(avatar.walkEntry);
+  assert.equal(avatar.fly(),true);assert.equal(avatar.walkEntry,null);step(3.5);
+  assert.equal(avatar.action,null);assert.equal(avatar.character.dataset.flightCount,'1');assert.equal(avatar.y,avatar.size().ground);
 });
 test('Automatic actions respect chat, dragging, pause, hidden pages and reduced motion',async()=>{
   const {avatar,motion,document,clock}=await fixture();

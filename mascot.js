@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   const base=new URL('.',document.currentScript.src).href;
-  const images={poses:base+'assets/tva-poses-v2.webp',walk:base+'assets/tva-walk-v4.webp',actions:base+'assets/tva-actions-v1.webp'};
+  const images={poses:base+'assets/tva-poses-v2.webp',walk:base+'assets/tva-walk-v4.webp',actions:base+'assets/tva-actions-v1.webp',locomotion:base+'assets/tva-locomotion-v1.webp'};
   const decoded={},leftAtlases={},normalized=new WeakSet();
   function dimensions(image){return [image.naturalWidth||image.width,image.naturalHeight||image.height];}
   function prepare(image,sheet){
@@ -12,7 +12,8 @@
       ctx.drawImage(image,0,0);const pixels=ctx.getImageData(0,0,atlas.width,atlas.height),p=pixels.data;
       for(let i=0;i<p.length;i+=4){
         // Clear the old low-alpha matte without tinting the new artwork.
-        const alpha=Math.max(0,Math.min(1,(p[i+3]/255-(sheet==='walk'?.08:.03))/(sheet==='walk'?.78:.84)));p[i+3]=Math.round(alpha*255);
+        const moving=sheet==='walk'||sheet==='locomotion';
+        const alpha=Math.max(0,Math.min(1,(p[i+3]/255-(moving?.08:.03))/(moving?.78:.84)));p[i+3]=Math.round(alpha*255);
       }
       ctx.putImageData(pixels,0,0);normalized.add(atlas);return sheet==='actions'?actionAtlas(atlas):atlas;
     }catch{return sheet==='actions'?actionAtlas(image):image;}
@@ -38,8 +39,12 @@
   const headX=[.6051,.6070,.6070,.6083,.6051,.6038,.6070,.6051,.6051,.6070,.6070,.6051,.6051,.6038,.6070,.6051];
   const floorY=[.9682,.9682,.9713,.9745,.9744,.9744,.9776,.9681,.9712,.9712,.9744,.9744,.9713,.9713,.9713,.9713];
   const walkScale=.962792;
+  const locomotionScale=.954516;
+  const locomotionFloor=[.9904,.9873,.9873,.9873,.9904,.9904,.9808,.9808,.9904,.9872,.9904,.9904,.9936,.9904,.9904,.9873];
+  const locomotionAnchor=[.534,.534,.534,.534,.534,.534,.534,.534,.466,.48,.495,.505,.534,.534,.534,.534];
   // Tight bounds include the lettering and a small blue margin, never the body outline.
   const logos={
+    locomotion:[[0.60287,0.4689,0.08931,0.03509],[0.59968,0.4689,0.08931,0.03509],[0.60925,0.47209,0.08293,0.03509],[0.60606,0.47209,0.07974,0.03509],[0.60287,0.46571,0.07974,0.04147],[0.60287,0.4689,0.07337,0.03828],[0.60606,0.4689,0.06699,0.03828],[0.60925,0.47847,0.06699,0.03509],[0.35407,0.4689,0.07656,0.03509],[0.38596,0.4689,0.08293,0.03828],[0.45295,0.46571,0.09569,0.03509],[0.46571,0.46571,0.09888,0.03509],[0.5614,0.4689,0.08931,0.03509],[0.59649,0.4689,0.08293,0.03509],[0.61563,0.4689,0.07974,0.03828],[0.6252,0.47209,0.07018,0.03509]],
     poses:[
       [.554,.481,.100,.041],[.5463,.4809,.099,.0414],
       [.5623,.4809,.0958,.0414],[.5573,.4809,.1019,.0414],
@@ -78,49 +83,29 @@
     if(normalized.has(image))normalized.add(atlas);
     leftAtlases[sheet]=atlas;return atlas;
   }
-  function entryPose(element,state,facing,pixels){
-    const key=[state,facing,pixels].join(':');
-    if(element._taviEntryKey===key)return element._taviEntryImage;
-    const index=poses[state]??0,image=facing<0?leftAtlas('poses'):decoded.poses;
-    const atlas=document.createElement('canvas');atlas.width=atlas.height=pixels;
-    const ctx=atlas.getContext('2d'),[width,height]=dimensions(image),reference=standing[index];
-    const scaleY=reference?.height ? .915/reference.height : 1,scaleX=reference?scaleY*.98:1;
-    const shiftY=reference?.height ? .958-(.94+scaleY*(reference.bottom-.94)) : 0;
-    // Bake the standing size and foot anchor into the outgoing picture.
-    ctx.translate(pixels*.5,pixels*(.94+shiftY));ctx.scale(scaleX,scaleY);ctx.translate(-pixels*.5,-pixels*.94);
-    ctx.drawImage(image,index%4*width/4,Math.floor(index/4)*height/4,width/4,height/4,0,0,pixels,pixels);
-    element._taviEntryKey=key;element._taviEntryImage=atlas;return atlas;
-  }
   let loaded;
-  function paint(element,state='idle',phase=0,facing=1,still=false,entry=null) {
-    const sheet=state==='walk'?'walk':['fly','hover','cartwheel'].includes(state)?'actions':'poses',rows=sheet==='actions'?1:4;
+  function paint(element,state='idle',phase=0,facing=1,still=false) {
+    const path=state==='walk-turn'?[8,9,10,11,12,1,2,3,4,5,6,7]:state==='walk-start'?[0,1,2,3,4,5,6,7]:state==='walk-stop'?[7,6,5,4,3,2,1,0]:null;
+    const sheet=state==='idle'||path?'locomotion':state==='walk'?'walk':['fly','hover','cartwheel'].includes(state)?'actions':'poses',rows=sheet==='actions'?1:4;
     const walkPhase=((phase%16)+16)%16,walkIndex=Math.floor(walkPhase);
-    const index=sheet==='walk'?walkIndex:state==='fly'?0:state==='hover'?1:state==='cartwheel'?(phase>=1?3:2):state==='jump'?[5,6][Math.min(1,Math.floor(phase))]:state==='held'?[12,13][Math.floor(phase)%2]:poses[state]??0;
-    const entryProgress=state==='walk'&&!still&&entry?Math.max(0,Math.min(1,entry.progress)):1;
-    const entryBlend=entryProgress*entryProgress*(3-2*entryProgress);
-    const entryShift=entryProgress<1&&standing[poses[entry.from]]?.height ? .064 : 0;
-    const key=[state,index,facing,entryProgress<1?entry.from+':'+Math.round(entryProgress*100):''].join(':');
+    const index=path?(still?0:path[Math.min(path.length-1,Math.floor(Math.max(0,Math.min(1,phase))*path.length))]):sheet==='locomotion'?0:sheet==='walk'?walkIndex:state==='fly'?0:state==='hover'?1:state==='cartwheel'?(phase>=1?3:2):state==='jump'?[5,6][Math.min(1,Math.floor(phase))]:state==='held'?[12,13][Math.floor(phase)%2]:poses[state]??0;
+    const key=[state,index,facing].join(':');
     if(element._taviPaintKey===key)return;
     const original=decoded[sheet];if(!original)return;
     const image=facing<0?leftAtlas(sheet):original;
     const ctx=element.getContext('2d');if(!ctx)return;
     const pixels=element.width,[width,height]=dimensions(original),cellWidth=width/4,cellHeight=height/rows;
     const draw=frame=>{
-      const scale=sheet==='walk'?walkScale:1;
-      const dx=sheet==='walk'?(.62-headX[frame]*scale-entryShift*(1-entryBlend))*pixels:0;
-      const dy=sheet==='walk'?(.958-floorY[frame]*scale)*pixels:0;
+      const scale=sheet==='walk'?walkScale:sheet==='locomotion'?locomotionScale:1;
+      const dx=sheet==='walk'?(.5-headX[frame]*scale)*pixels:sheet==='locomotion'?(locomotionAnchor[frame]-(logos.locomotion[frame][0]+logos.locomotion[frame][2]/2)*scale)*pixels:0;
+      const dy=sheet==='walk'?(.958-floorY[frame]*scale)*pixels:sheet==='locomotion'?(.958-locomotionFloor[frame]*scale)*pixels:0;
       ctx.drawImage(image,(frame%4)*cellWidth,Math.floor(frame/4)*cellHeight,cellWidth,cellHeight,dx,dy,pixels*scale,pixels*scale);
     };
     ctx.clearRect(0,0,pixels,pixels);
     ctx.globalCompositeOperation='source-over';
     // Draw one complete illustrated character, keeping its original anatomy and colors.
     ctx.globalAlpha=1;ctx.filter='none';
-    if(entryProgress<1&&decoded.poses){
-      ctx.globalAlpha=1-entryBlend;ctx.drawImage(entryPose(element,entry.from,facing,pixels),entryShift*entryBlend*pixels,0);
-      // Add weighted pixels so overlapping opaque body colors stay opaque.
-      ctx.globalCompositeOperation='lighter';ctx.globalAlpha=entryBlend;draw(index);
-      ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
-    }else{draw(index);if(!normalized.has(image))draw(index);}
+    draw(index);
     ctx.filter='none';
     const reference=sheet==='poses'?standing[index]:null;
     const scaleY=reference?.height ? .915/reference.height : 1,scaleX=reference?scaleY*.98:1;
@@ -135,7 +120,7 @@
     element.dataset.facing=facing<0?'left':'right';
     element.dataset.renderer='frames';
     element.dataset.phase=String(walkPhase);
-    element.dataset.blend='0';element.dataset.walkEntry=String(Math.round(entryProgress*100)/100);element._taviPaintKey=key;
+    element.dataset.blend='0';element.dataset.walkEntry=path?String(Math.max(0,Math.min(1,phase))):'1';element._taviPaintKey=key;
   }
   window.ChatAvatarArt={
     images,

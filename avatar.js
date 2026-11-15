@@ -4,7 +4,7 @@
   if (window.ChatAvatar) return;
   const script = document.currentScript;
   const BASE = new URL('.', script.src).href;
-  const VERSION = 'tavi-motion-13';
+  const VERSION = 'tavi-motion-14';
   const deps = new Map();
   function loadScript(url) {
     if (!deps.has(url)) deps.set(url, new Promise((resolve, reject) => { const s = document.createElement('script'); s.src = url; s.onload = resolve; s.onerror = () => reject(Error('Datei konnte nicht geladen werden: ' + url)); document.head.append(s); }));
@@ -103,19 +103,18 @@
       this.character.addEventListener('click',()=>{if(this.ignoreClick){this.ignoreClick=false;return;}this.opened?this.close():this.open();});
     }
     setState(state) {
-      if(state!=='walk')this.walkEntry=null;
+      if(state!=='walk'){this.walkEntry=null;this.walkExit=null;}
       if(state!==this.state){this.state=state;this.frame=0;this.stateStarted=performance.now();}
       const durations={wave:1300,talk:3200,point:1600,think:3000,celebrate:1800,land:200,recover:240,crouch:170,rest:4500};
       this.stateUntil=durations[state]?performance.now()+durations[state]:Infinity;
       this.character.dataset.state=state;this.drawFrame();
     }
     drawFrame() {
-      let entry=null;
-      if(this.walkEntry&&this.state==='walk'&&!this.paused&&!this.motion.matches){
-        const progress=Math.min(1,Math.max(0,(performance.now()-this.walkEntry.started)/240));
-        if(progress<1)entry={from:this.walkEntry.from,progress};else this.walkEntry=null;
-      }
-      if(this.visual)window.ChatAvatarArt.paint(this.visual,this.state,this.motion.matches?0:this.frame,this.facing,this.paused||this.motion.matches,entry);
+      let state=this.state,phase=this.frame;
+      if(state==='walk'&&this.walkEntry){state=this.walkEntry.turning?'walk-turn':'walk-start';phase=Math.min(1,this.walkEntry.elapsed/this.walkEntry.duration);}
+      else if(state==='walk'&&this.walkExit){state='walk-stop';phase=Math.min(1,this.walkExit.elapsed/this.walkExit.duration);}
+      this.character.dataset.walkStage=this.state==='walk'?(this.walkEntry?(this.walkEntry.turning?'turn':'start'):this.walkExit?'stop':'cruise'):'none';
+      if(this.visual)window.ChatAvatarArt.paint(this.visual,state,this.motion.matches?0:phase,this.facing,this.paused||this.motion.matches);
       const paused=String(this.paused);if(this.character.dataset.paused!==paused)this.character.dataset.paused=paused;
     }
     position() {
@@ -140,9 +139,9 @@
       const M=window.ChatAvatarMotion,s=this.size();
       this.targetX=M.clamp(Number(target)||0,0,Math.max(0,innerWidth-s.width));
       if(Math.abs(this.targetX-this.x)<20)return false;
-      const now=performance.now();
-      this.walkEntry={from:this.state==='walk'?'idle':this.state,started:now};
-      this.facing=this.targetX<this.x?-1:1;this.velocity=0;this.walkDistance=0;this.turnUntil=now+140;
+      const facing=this.targetX<this.x?-1:1,turning=facing!==this.facing;
+      this.walkEntry={elapsed:0,duration:turning?.66:.44,turning,startX:this.x,travel:Math.min(s.width*.035,Math.abs(this.targetX-this.x)*.08)};
+      this.walkExit=null;this.facing=facing;this.velocity=0;this.walkDistance=0;
       this.setState('walk');return true;
     }
     jump() {
@@ -226,12 +225,27 @@
         } else if(!this.opened&&!this.character.matches(':focus-visible')&&!this.motion.matches) {
           if(this.state==='walk') {
             this.targetX=M.clamp(this.targetX,0,Math.max(0,innerWidth-s.width));
-            if(now>=this.turnUntil) {
+            if(this.walkEntry){
+              const entry=this.walkEntry;entry.elapsed+=dt;
+              const progress=Math.min(1,entry.elapsed/entry.duration),step=Math.max(0,(progress-.65)/.35);
+              this.x=entry.startX+this.facing*entry.travel*step*step;
+              if(progress>=1){
+                this.walkEntry=null;this.frame=4;this.walkDistance=0;
+                const distance=Math.abs(this.targetX-this.x),cycles=Math.max(.5,Math.round(distance/s.stride*2)/2);
+                this.walkStride=Math.max(1,distance/cycles);
+              }
+            }else if(this.walkExit){
+              this.walkExit.elapsed+=dt;
+              if(this.walkExit.elapsed>=this.walkExit.duration){
+                this.setState('idle');this.nextWalk=now+4500+Math.random()*4500;
+                this.tipCount=(this.tipCount||0)+1;if(this.tipCount%3===0)this.later(()=>this.showTip(),600);
+              }
+            }else{
               const next=M.walkStep({x:this.x,target:this.targetX,velocity:this.velocity,distance:this.walkDistance},dt,s);
-              this.x=next.x;this.velocity=next.velocity;this.walkDistance=next.distance;this.frame=M.gaitPhaseAtDistance(next.distance,s.stride);
-              if(next.arrived){this.x=this.targetX;this.velocity=0;this.setState('idle');this.nextWalk=now+4500+Math.random()*4500;this.tipCount=(this.tipCount||0)+1;if(this.tipCount%3===0)this.showTip();}
-              this.position();
+              this.x=next.x;this.velocity=next.velocity;this.walkDistance=next.distance;this.frame=(4+M.gaitPhaseAtDistance(next.distance,this.walkStride||s.stride))%16;
+              if(next.arrived){this.x=this.targetX;this.velocity=0;this.walkExit={elapsed:0,duration:.38};}
             }
+            this.position();
           } else if(this.state==='idle'&&now>this.nextAction) {
             if(!this.startAction('fly',true))this.nextAction=now+20000;
           } else if(this.state==='idle'&&now>this.nextWalk) {
@@ -244,7 +258,7 @@
       if(!document.hidden&&!this.hidden)this.drawFrame();this.raf=requestAnimationFrame(this.tick);
     }
     showTip() {
-      if (!this.pack || this.opened || this.hidden || this.drag || this.action || this.paused || this.y > this.size().ground + .5 || ['jump','crouch','land','recover'].includes(this.state)) return;
+      if (!this.pack || this.opened || this.hidden || this.drag || this.action || this.paused || this.y > this.size().ground + .5 || ['walk','jump','crouch','land','recover'].includes(this.state)) return;
       const ids = this.pack.suggested, id = ids[(this.tipIndex || 0) % Math.max(1, ids.length)]; this.tipIndex = (this.tipIndex || 0) + 1;
       const e = this.pack.entries.find(e => e.id === id && window.ChatAvatarKnowledge.active(e)); if (!e) return;
       this.tipEntry = e.id; this.tip.replaceChildren(el('div', '', e.question), el('span', '', 'Anklicken · Ich helfe Ihnen →')); this.tip.hidden = false; this.setState('wave'); this.position();

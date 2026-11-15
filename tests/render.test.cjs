@@ -48,22 +48,21 @@ test('Unchanged pictures are cached while consecutive walking poses still advanc
   assert.equal(canvas.calls.length,walking);
   art.paint(canvas,'walk',3.2,1);assert.ok(canvas.calls.length>walking);
 });
-test('Only the entry into walking blends poses, preserving opaque overlap and solid normal strides',async()=>{
+test('Starting, turning and stopping each draw one intact opaque illustration without crossfades',async()=>{
   const {art,canvas}=await artFixture();
-  for(const facing of [1,-1]){
-    canvas.calls.length=0;art.paint(canvas,'walk',0,facing,false,{from:'idle',progress:.5});
-    const draws=canvas.calls.filter(c=>!c.clear);
-    assert.equal(draws.length,2);assert.equal(draws[0].composite,'source-over');assert.equal(draws[1].composite,'lighter');
-    assert.equal(draws[0].alpha+draws[1].alpha,1);assert.equal(canvas.context.globalAlpha,1);
-    assert.equal(canvas.context.globalCompositeOperation,'source-over');
-    assert.equal(canvas.dataset.walkEntry,'0.5');
-    const count=canvas.calls.length;art.paint(canvas,'walk',0,facing,false,{from:'idle',progress:.75});
-    assert.ok(canvas.calls.length>count,'The transition advances even while the first stride pose is held');
-    canvas.calls.length=0;art.paint(canvas,'walk',1,facing);
-    assert.equal(canvas.calls.filter(c=>!c.clear).length,1);assert.equal(canvas.calls.at(-1).alpha,1);
-    canvas.calls.length=0;art.paint(canvas,'walk',0,facing,true,{from:'idle',progress:.5});
-    assert.equal(canvas.calls.filter(c=>!c.clear).length,1);assert.equal(canvas.calls.at(-1).alpha,1);
+  for(const facing of [1,-1])for(const state of ['walk-start','walk-turn','walk-stop']){
+    const seen=[];
+    for(let i=0;i<=24;i++){
+      canvas.calls.length=0;art.paint(canvas,state,i/24,facing);
+      const draws=canvas.calls.filter(c=>!c.clear);
+      if(draws.length){assert.equal(draws.length,1);assert.equal(draws[0].alpha,1);assert.equal(draws[0].composite,'source-over');seen.push(Number(canvas.dataset.frame));}
+      assert.equal(canvas.dataset.sheet,'locomotion');assert.equal(canvas.dataset.blend,'0');
+    }
+    const expected=state==='walk-start'?[0,1,2,3,4,5,6,7]:state==='walk-stop'?[7,6,5,4,3,2,1,0]:[8,9,10,11,12,1,2,3,4,5,6,7];
+    assert.deepEqual(seen,expected);
   }
+  canvas.calls.length=0;art.paint(canvas,'walk',0,1,false,{from:'idle',progress:.5});
+  assert.equal(canvas.calls.filter(c=>!c.clear).length,1,'A cached old bundle cannot reintroduce the translucent entry');
 });
 test('Source alpha is made solid without warming or darkening the original palette',async()=>{
   const {canvas,canvases}=await artFixture();
@@ -89,7 +88,7 @@ test('Cached rig globals cannot replace the complete illustrated character',asyn
     const draws=canvas.calls.filter(c=>!c.clear);assert.ok(draws.length<=1);
     assert.equal(canvas.dataset.renderer,'frames');assert.notEqual(canvas.dataset.sheet,'rig');
   }
-  assert.equal(rendered.length,0);assert.deepEqual(Object.keys(art.images),['poses','walk','actions']);
+  assert.equal(rendered.length,0);assert.deepEqual(Object.keys(art.images),['poses','walk','actions','locomotion']);
 });
 test('Flight and cartwheel use intact illustrated poses at full opacity',async()=>{
   const {art,canvas}=await artFixture();
@@ -106,17 +105,19 @@ test('A device without motion interpolation still receives solid colored poses',
   assert.equal(canvas.dataset.renderer,'frames');assert.equal(canvas.dataset.frame,'4');
   assert.equal(canvas.calls.at(-1).alpha,1);
 });
-test('The smoother renderer retains the corrected standing height and returns to sharp idle',async()=>{
+test('Standing uses the same artwork as the transitions with matched height and a fixed floor',async()=>{
   const {art,canvas}=await artFixture();art.paint(canvas,'walk',15.9,-1);art.paint(canvas,'idle',0,-1);
-  const [sx,sy]=canvas.style.scale.split(' ').map(Number);
-  assert.ok(sx<0);assert.ok(Math.abs(.955*sy-.915)<.0001);
-  assert.equal(canvas.dataset.sheet,'poses');assert.equal(canvas.dataset.blend,'0');
+  const [sx,sy]=canvas.style.scale.split(' ').map(Number),draw=canvas.calls.at(-1);
+  assert.equal(sx,-1);assert.equal(sy,1);
+  assert.ok(Math.abs(draw.args[8]*.9586/canvas.height-.915)<.0001);
+  assert.ok(Math.abs((draw.args[6]+draw.args[8]*.9904)/canvas.height-.958)<.0001);
+  assert.equal(canvas.dataset.sheet,'locomotion');assert.equal(canvas.dataset.blend,'0');
   assert.equal(canvas.dataset.pose,'idle');
 });
 test('Left-facing poses counter-reflect just the logo and reuse the corrected atlas',async()=>{
   const {art,canvas,canvases}=await artFixture();
-  const rightImage=canvas.calls.find(c=>!c.clear).args[0];
-  art.paint(canvas,'idle',0,-1);
+  art.paint(canvas,'wave',0,1);const rightImage=canvas.calls.at(-1).args[0];
+  art.paint(canvas,'wave',0,-1);
   const leftImage=canvas.calls.at(-1).args[0];
   assert.notEqual(leftImage,rightImage);assert.ok(canvases.includes(leftImage));
   assert.equal(canvas.dataset.facing,'left');assert.ok(Number(canvas.style.scale.split(' ')[0])<0);
@@ -131,7 +132,7 @@ test('Left-facing poses counter-reflect just the logo and reuse the corrected at
   }
   const count=canvases.length;art.paint(canvas,'talk',0,-1);
   assert.equal(canvases.length,count);assert.equal(canvas.calls.at(-1).args[0],leftImage);
-  art.paint(canvas,'idle',0,1);assert.equal(canvas.calls.at(-1).args[0],rightImage);
+  art.paint(canvas,'wave',0,1);assert.equal(canvas.calls.at(-1).args[0],rightImage);
 });
 test('The walking loop changes from pose sixteen to one with full opacity and the corrected logo',async()=>{
   const {art,canvas}=await artFixture();canvas.calls.length=0;
