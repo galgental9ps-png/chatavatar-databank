@@ -10,8 +10,17 @@
     const size = Math.max(72, Math.min(viewportWidth <= 540 ? 152 : 192, Math.max(72,viewportWidth - 16), Math.max(72,viewportHeight - 24)));
     return { width: size, height: size, ground: 10, stride: size * 0.43, speed: size * 0.44 };
   }
+  function gaitPhaseAtDistance(distance, stride) {
+    return ((Math.max(0, distance) / Math.max(1, stride)) % 1) * 8;
+  }
   function frameAtDistance(distance, stride) {
-    return Math.floor(((Math.max(0, distance) / Math.max(1, stride)) % 1) * 8) % 8;
+    return Math.floor(gaitPhaseAtDistance(distance,stride));
+  }
+  function walkFramePlan(phase) {
+    const wrapped=((phase%8)+8)%8, current=Math.floor(wrapped);
+    // Brief motion blending softens the change without doubling whole steps.
+    const progress=clamp((wrapped-current-.58)/.42,0,1);
+    return { current, next:(current+1)%8, blend:progress*progress*(3-2*progress) };
   }
   function walkStep({ x, target, velocity = 0, distance = 0 }, seconds, size) {
     const dt = clamp(seconds, 0, 0.05), remaining = Math.abs(target - x);
@@ -32,6 +41,6 @@
     const nextY = Math.max(ground, y + nextVelocity * dt);
     return { y: nextY, velocity: nextVelocity, landed: nextY === ground && nextVelocity < 0 };
   }
-  return { dimensions, clamp, frameAtDistance, walkStep, fallStep, jumpStep };
+  return { dimensions, clamp, frameAtDistance, gaitPhaseAtDistance, walkFramePlan, walkStep, fallStep, jumpStep };
 });
 

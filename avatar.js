@@ -4,7 +4,7 @@
   if (window.ChatAvatar) return;
   const script = document.currentScript;
   const BASE = new URL('.', script.src).href;
-  const VERSION = 'tavi-motion-3';
+  const VERSION = 'tavi-motion-4';
   const deps = new Map();
   function loadScript(url) {
     if (!deps.has(url)) deps.set(url, new Promise((resolve, reject) => { const s = document.createElement('script'); s.src = url; s.onload = resolve; s.onerror = () => reject(Error('Datei konnte nicht geladen werden: ' + url)); document.head.append(s); }));
@@ -108,15 +108,19 @@
     }
     drawFrame() {
       if(this.visual)window.ChatAvatarArt.paint(this.visual,this.state,this.motion.matches?0:this.frame,this.facing);
-      this.character.dataset.paused=String(this.paused);
+      const paused=String(this.paused);if(this.character.dataset.paused!==paused)this.character.dataset.paused=paused;
     }
     position() {
       const s=this.size(),maxY=Math.max(s.ground,innerHeight-s.height-4);
       this.x=Math.max(0,Math.min(Math.max(0,innerWidth-s.width),this.x));this.y=Math.max(s.ground,Math.min(maxY,this.y));
-      this.character.style.width=s.width+'px';this.character.style.height=s.height+'px';
-      this.character.style.transform='translate('+this.x+'px,'+(-this.y)+'px)';this.character.style.bottom='0';
-      this.tip.style.left=Math.max(10,Math.min(innerWidth-(innerWidth<=540?220:246),this.x-25))+'px';
-      this.tip.style.bottom=Math.min(innerHeight-110,this.y+s.height-12)+'px';
+      if(this.drawnSize!==s.width){this.character.style.width=s.width+'px';this.character.style.height=s.height+'px';this.drawnSize=s.width;}
+      const transform='translate3d('+(Math.round(this.x*100)/100)+'px,'+(-Math.round(this.y*100)/100)+'px,0)';
+      if(this.drawnPosition!==transform){this.character.style.transform=transform;this.drawnPosition=transform;}
+      this.character.style.bottom='0';
+      if(!this.tip.hidden){
+        this.tip.style.left=Math.max(10,Math.min(innerWidth-(innerWidth<=540?220:246),this.x-25))+'px';
+        this.tip.style.bottom=Math.min(innerHeight-110,this.y+s.height-12)+'px';
+      }
     }
     prepareMovement() {
       if(!this.pack||this.paused||this.motion.matches||this.hidden||this.drag||this.y>this.size().ground+.5)return false;
@@ -176,7 +180,7 @@
             this.targetX=M.clamp(this.targetX,0,Math.max(0,innerWidth-s.width));
             if(now>=this.turnUntil) {
               const next=M.walkStep({x:this.x,target:this.targetX,velocity:this.velocity,distance:this.walkDistance},dt,s);
-              this.x=next.x;this.velocity=next.velocity;this.walkDistance=next.distance;this.frame=M.frameAtDistance(next.distance,s.stride);
+              this.x=next.x;this.velocity=next.velocity;this.walkDistance=next.distance;this.frame=M.gaitPhaseAtDistance(next.distance,s.stride);
               if(next.arrived){this.x=this.targetX;this.velocity=0;this.setState('idle');this.nextWalk=now+4500+Math.random()*4500;this.tipCount=(this.tipCount||0)+1;if(this.tipCount%3===0)this.showTip();}
               this.position();
             }
@@ -189,7 +193,7 @@
           }
         }
       }
-      this.drawFrame();this.raf=requestAnimationFrame(this.tick);
+      if(!document.hidden&&!this.hidden)this.drawFrame();this.raf=requestAnimationFrame(this.tick);
     }
     showTip() {
       if (!this.pack || this.opened || this.hidden || this.drag || this.paused || this.y > this.size().ground + .5 || ['jump','crouch','land','recover'].includes(this.state)) return;

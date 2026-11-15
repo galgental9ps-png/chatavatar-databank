@@ -1,4 +1,4 @@
-.tavi-frame{display:block;width:100%;height:100%;background-repeat:no-repeat;background-size:400% 400%;transform-origin:50% 94%;pointer-events:none;user-select:none;image-rendering:auto;backface-visibility:hidden;will-change:background-position}
+.tavi-frame{display:block;width:100%;height:100%;background-repeat:no-repeat;background-size:400% 400%;transform-origin:50% 94%;pointer-events:none;user-select:none;image-rendering:auto;backface-visibility:hidden;will-change:transform}
 [data-state=idle] .tavi-frame{animation:tavi-breathe 4.5s ease-in-out infinite}
 [data-state=held] .tavi-frame{transform-origin:50% 20%;animation:tavi-held .7s ease-in-out infinite alternate}
 [data-state=land] .tavi-frame{animation:tavi-land .18s ease-out both}
