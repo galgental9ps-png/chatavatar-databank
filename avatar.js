@@ -4,7 +4,7 @@
   if (window.ChatAvatar) return;
   const script = document.currentScript;
   const BASE = new URL('.', script.src).href;
-  const VERSION = 'tavi-motion-10';
+  const VERSION = 'tavi-motion-11';
   const deps = new Map();
   function loadScript(url) {
     if (!deps.has(url)) deps.set(url, new Promise((resolve, reject) => { const s = document.createElement('script'); s.src = url; s.onload = resolve; s.onerror = () => reject(Error('Datei konnte nicht geladen werden: ' + url)); document.head.append(s); }));
@@ -18,7 +18,7 @@
   function el(tag, cls, text) { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
   class Mascot {
     constructor(options = {}) {
-      this.options = options; this.x = Math.max(8, innerWidth - 210); this.y = 10; this.state = 'idle'; this.facing = 1; this.opened = false; this.paused = false; this.voice = false; this.hidden = false; this.destroyed = false; this.category = ''; this.timers = new Set(); this.frame = 0; this.walkDistance = 0; this.velocity = 0; this.fallVelocity = 0; this.nextWalk = performance.now() + 4500; this.nextHop = performance.now() + 65000; this.last = 0; this.stateUntil = Infinity;
+      this.options = options; this.x = Math.max(8, innerWidth - 210); this.y = 10; this.state = 'idle'; this.facing = 1; this.opened = false; this.paused = false; this.voice = false; this.hidden = false; this.destroyed = false; this.category = ''; this.timers = new Set(); this.frame = 0; this.walkDistance = 0; this.velocity = 0; this.fallVelocity = 0; this.nextWalk = performance.now() + 4500; this.nextAction = performance.now()+28000+Math.random()*15000; this.lastAction='cartwheel'; this.action=null; this.last = 0; this.stateUntil = Infinity;
       this.motion = matchMedia('(prefers-reduced-motion: reduce)');
       this.onMotion = () => this.setPaused(this.motion.matches);
       this.motion.addEventListener('change', this.onMotion); this.paused = this.motion.matches;
@@ -78,6 +78,7 @@
     bindDrag() {
       this.character.addEventListener('pointerdown', e => {
         if(e.button!==0)return;
+        this.cancelAction();
         this.drag={pointer:e.pointerId,startX:e.clientX,startY:e.clientY,x:this.x,y:this.y,moved:false};
         this.velocity=0;this.fallVelocity=0;this.character.setPointerCapture(e.pointerId);
       });
@@ -96,6 +97,7 @@
           else this.setState(this.y>this.size().ground+.5?'fall':'land');
         }
         this.nextWalk=performance.now()+5500;
+        this.nextAction=performance.now()+25000;
       };
       this.character.addEventListener('pointerup',release);this.character.addEventListener('pointercancel',release);
       this.character.addEventListener('click',()=>{if(this.ignoreClick){this.ignoreClick=false;return;}this.opened?this.close():this.open();});
@@ -111,8 +113,8 @@
       const paused=String(this.paused);if(this.character.dataset.paused!==paused)this.character.dataset.paused=paused;
     }
     position() {
-      const s=this.size(),maxY=Math.max(s.ground,innerHeight-s.height-4);
-      this.x=Math.max(0,Math.min(Math.max(0,innerWidth-s.width),this.x));this.y=Math.max(s.ground,Math.min(maxY,this.y));
+      const s=this.size(),minY=this.action?.type==='cartwheel'?-s.height*.2:s.ground,maxY=Math.max(s.ground,innerHeight-s.height-4);
+      this.x=Math.max(0,Math.min(Math.max(0,innerWidth-s.width),this.x));this.y=Math.max(minY,Math.min(maxY,this.y));
       if(this.drawnSize!==s.width){this.character.style.width=s.width+'px';this.character.style.height=s.height+'px';this.drawnSize=s.width;}
       const transform='translate3d('+(Math.round(this.x*100)/100)+'px,'+(-Math.round(this.y*100)/100)+'px,0)';
       if(this.drawnPosition!==transform){this.character.style.transform=transform;this.drawnPosition=transform;}
@@ -123,7 +125,7 @@
       }
     }
     prepareMovement() {
-      if(!this.pack||this.paused||this.motion.matches||this.hidden||this.drag||this.y>this.size().ground+.5)return false;
+      if(!this.pack||this.paused||this.motion.matches||this.hidden||this.drag||this.action||this.y>this.size().ground+.5||['jump','fall','land','recover','crouch'].includes(this.state))return false;
       this.opened=false;this.panel.hidden=true;this.character.setAttribute('aria-expanded','false');this.tip.hidden=true;
       return true;
     }
@@ -137,12 +139,42 @@
     }
     jump() {
       if(!this.prepareMovement())return false;
-      this.velocity=0;this.jumpVelocity=440;this.nextHop=performance.now()+60000+Math.random()*30000;this.setState('crouch');return true;
+      this.velocity=0;this.jumpVelocity=440;this.nextAction=Math.max(this.nextAction,performance.now()+20000);this.setState('crouch');return true;
+    }
+    fly(){return this.startAction('fly');}
+    cartwheel(){return this.startAction('cartwheel');}
+    startAction(type,automatic=false){
+      const M=window.ChatAvatarMotion;if(!M)return false;
+      const plan=M.actionPlan(type,this.x,this.size(),innerWidth,innerHeight,this.facing);
+      if(!plan||!this.prepareMovement())return false;
+      plan.automatic=automatic;this.action=plan;this.lastAction=type;this.facing=plan.facing;this.velocity=0;this.fallVelocity=0;
+      this.character.dataset.action=type;this.character.dataset.actionProgress='0';
+      this.applyActionRotation(0);this.setState('crouch');return true;
+    }
+    applyActionRotation(angle){
+      if(this.actionAngle===angle)return;
+      this.actionAngle=angle;this.sprite.style.transformOrigin='50% 50%';this.sprite.style.transform='rotate('+angle+'deg)';
+    }
+    clearAction(){
+      this.action=null;this.actionAngle=null;this.sprite.style.transform='none';this.sprite.style.transformOrigin='';this.character.dataset.action='none';
+    }
+    cancelAction(){
+      if(!this.action)return;
+      this.clearAction();this.y=Math.max(this.size().ground,this.y);this.fallVelocity=0;
+      this.setState(this.y>this.size().ground+.5?'fall':'idle');this.position();this.nextAction=performance.now()+25000;
+    }
+    finishAction(){
+      const type=this.action.type,key=type==='fly'?'flightCount':'cartwheelCount';
+      const followUp=type==='fly'&&this.action.automatic&&window.ChatAvatarMotion.actionPlan('cartwheel',this.x,this.size(),innerWidth,innerHeight);
+      this.character.dataset[key]=String((Number(this.character.dataset[key])||0)+1);
+      this.clearAction();this.character.dataset.actionProgress='1';this.land();this.position();
+      this.nextAction=performance.now()+(followUp?1300:45000+Math.random()*30000);
     }
     setPaused(value) {
+      this.clearAction();
       this.paused=Boolean(value);this.velocity=0;this.fallVelocity=0;this.jumpVelocity=0;
       if(this.paused){this.y=this.size().ground;this.position();}
-      this.setState('idle');this.nextWalk=performance.now()+3000;this.render();
+      this.setState('idle');this.nextWalk=performance.now()+3000;this.nextAction=performance.now()+30000;this.render();
     }
     land() {
       this.fallVelocity=0;this.jumpVelocity=0;this.y=this.size().ground;
@@ -156,6 +188,14 @@
         const M=window.ChatAvatarMotion,s=this.size();
         if(this.drag) {
           if(this.drag.moved&&!this.motion.matches)this.frame=Math.floor((now-this.stateStarted)/350)%2;
+        } else if(this.action){
+          this.action.elapsed+=dt;
+          const step=M.actionFrame(this.action,this.action.elapsed,s,innerWidth,innerHeight);
+          this.x=step.x;this.y=step.y;
+          if(this.state!==step.pose)this.setState(step.pose);
+          this.frame=step.frame;this.applyActionRotation(step.rotation);
+          const progress=String(Math.round(step.progress*100)/100);if(this.character.dataset.actionProgress!==progress)this.character.dataset.actionProgress=progress;
+          this.position();if(step.done)this.finishAction();
         } else if(this.state==='crouch') {
           if(now>this.stateUntil)this.setState('jump');
         } else if(this.state==='jump') {
@@ -184,8 +224,9 @@
               if(next.arrived){this.x=this.targetX;this.velocity=0;this.setState('idle');this.nextWalk=now+4500+Math.random()*4500;this.tipCount=(this.tipCount||0)+1;if(this.tipCount%3===0)this.showTip();}
               this.position();
             }
-          } else if(this.state==='idle'&&now>this.nextHop) {
-            this.jump();
+          } else if(this.state==='idle'&&now>this.nextAction) {
+            const type=this.lastAction==='fly'?'cartwheel':'fly';
+            if(!this.startAction(type,true)&&!this.startAction(type==='fly'?'cartwheel':'fly',true))this.nextAction=now+20000;
           } else if(this.state==='idle'&&now>this.nextWalk) {
             const max=Math.max(0,innerWidth-s.width-8),distance=Math.min(max,140+Math.random()*250);
             const target=this.x>max/2?Math.max(8,this.x-distance):Math.min(max,this.x+distance);
@@ -196,13 +237,13 @@
       if(!document.hidden&&!this.hidden)this.drawFrame();this.raf=requestAnimationFrame(this.tick);
     }
     showTip() {
-      if (!this.pack || this.opened || this.hidden || this.drag || this.paused || this.y > this.size().ground + .5 || ['jump','crouch','land','recover'].includes(this.state)) return;
+      if (!this.pack || this.opened || this.hidden || this.drag || this.action || this.paused || this.y > this.size().ground + .5 || ['jump','crouch','land','recover'].includes(this.state)) return;
       const ids = this.pack.suggested, id = ids[(this.tipIndex || 0) % Math.max(1, ids.length)]; this.tipIndex = (this.tipIndex || 0) + 1;
       const e = this.pack.entries.find(e => e.id === id && window.ChatAvatarKnowledge.active(e)); if (!e) return;
       this.tipEntry = e.id; this.tip.replaceChildren(el('div', '', e.question), el('span', '', 'Anklicken · Ich helfe Ihnen →')); this.tip.hidden = false; this.setState('wave'); this.position();
       this.later(() => { this.tip.hidden = true; if (this.state === 'wave' && !this.drag) this.setState('idle'); }, 9000);
     }
-    open() { if (!this.pack) return; this.hidden = false; this.character.hidden = false; this.launcher.hidden = true; this.opened = true; this.tip.hidden = true; this.panel.hidden = false; this.character.setAttribute('aria-expanded', 'true'); if (this.y <= this.size().ground + .5 && !['land','recover'].includes(this.state)) this.setState('wave'); this.render(); this.panel.querySelector('.close')?.focus({ preventScroll: true }); }
+    open() { if (!this.pack) return; this.cancelAction();this.nextAction=Math.max(this.nextAction,performance.now()+18000); this.hidden = false; this.character.hidden = false; this.launcher.hidden = true; this.opened = true; this.tip.hidden = true; this.panel.hidden = false; this.character.setAttribute('aria-expanded', 'true'); if (this.y <= this.size().ground + .5 && !['land','recover'].includes(this.state)) this.setState('wave'); this.render(); this.panel.querySelector('.close')?.focus({ preventScroll: true }); }
     close() { this.opened = false; this.panel.hidden = true; this.character.setAttribute('aria-expanded', 'false'); this.nextWalk = performance.now() + 5000; if (!['fall','jump','crouch','land','recover'].includes(this.state)) this.setState('idle'); this.character.focus({ preventScroll: true }); }
     minimize() { this.opened = false; this.hidden = true; this.panel.hidden = true; this.tip.hidden = true; this.character.hidden = true; this.launcher.hidden = false; this.character.setAttribute('aria-expanded', 'false'); this.launcher.focus(); }
     buttonFor(entry) {

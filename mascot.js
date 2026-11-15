@@ -2,12 +2,12 @@
 (function () {
   'use strict';
   const base=new URL('.',document.currentScript.src).href;
-  const images={poses:base+'assets/tva-poses-v2.webp',walk:base+'assets/tva-walk-v3.webp'};
+  const images={poses:base+'assets/tva-poses-v2.webp',walk:base+'assets/tva-walk-v3.webp',actions:base+'assets/tva-actions-v1.webp'};
   const decoded={},leftAtlases={},normalized=new WeakSet();
   function dimensions(image){return [image.naturalWidth||image.width,image.naturalHeight||image.height];}
   function prepare(image,sheet){
     const atlas=document.createElement('canvas');[atlas.width,atlas.height]=dimensions(image);
-    const ctx=atlas.getContext('2d');if(!ctx||typeof ctx.getImageData!=='function')return image;
+    const ctx=atlas.getContext('2d');if(!ctx||typeof ctx.getImageData!=='function')return sheet==='actions'?actionAtlas(image):image;
     try{
       ctx.drawImage(image,0,0);const pixels=ctx.getImageData(0,0,atlas.width,atlas.height),p=pixels.data;
       for(let i=0;i<p.length;i+=4){
@@ -17,8 +17,19 @@
           for(let c=0;c<3;c++)p[i+c]=Math.max(0,Math.min(255,((p[i+c]-127.5)*1.08+127.5)*.96));
         }
       }
-      ctx.putImageData(pixels,0,0);normalized.add(atlas);return atlas;
-    }catch{return image;}
+      ctx.putImageData(pixels,0,0);normalized.add(atlas);return sheet==='actions'?actionAtlas(atlas):atlas;
+    }catch{return sheet==='actions'?actionAtlas(image):image;}
+  }
+  function actionAtlas(image){
+    const atlas=document.createElement('canvas'),cell=512;atlas.width=cell*4;atlas.height=cell;
+    const ctx=atlas.getContext('2d');
+    const regions=[[154,7,349,555],[760,9,375,553],[158,594,328,639],[678,616,476,616]];
+    regions.forEach(([x,y,w,h],index)=>{
+      const height=.915*cell,width=w/h*height,centerX=(index+.5)*cell,centerY=(.049+.915/2)*cell;
+      ctx.save();ctx.translate(centerX,centerY);if(index>=2)ctx.rotate(Math.PI);
+      ctx.drawImage(image,x,y,w,h,-width/2,-height/2,width,height);ctx.restore();
+    });
+    if(normalized.has(image))normalized.add(atlas);return atlas;
   }
   const poses={idle:0,wave:1,talk:2,point:3,crouch:4,fall:7,land:8,recover:9,celebrate:10,think:11,held:12,rest:14,surprised:15};
   const standing={
@@ -42,6 +53,7 @@
       [.586,.449,.092,.045],[.591,.433,.092,.042],
       [.5719,.6146,.1022,.0541],[.557,.433,.096,.045]
     ],
+    actions:[[.5651,.3969,.0874,.0412],[.5157,.3965,.0827,.0381],[.4585,.4199,.0845,.0372],[.4436,.4307,.0891,.0371]],
     walk:[
       [.5987,.4363,.0796,.0382],[.6006,.4363,.0767,.0382],
       [.6006,.4363,.0799,.0382],[.6019,.4331,.0764,.0414],
@@ -57,7 +69,7 @@
     if(leftAtlases[sheet])return leftAtlases[sheet];
     const image=decoded[sheet],atlas=document.createElement('canvas');
     [atlas.width,atlas.height]=dimensions(image);
-    const ctx=atlas.getContext('2d'),cellWidth=atlas.width/4,cellHeight=atlas.height/4;
+    const ctx=atlas.getContext('2d'),cellWidth=atlas.width/4,cellHeight=atlas.height/(sheet==='actions'?1:4);
     ctx.drawImage(image,0,0);
     logos[sheet].forEach(([x,y,width,height],index)=>{
       const sx=(index%4+x)*cellWidth,sy=(Math.floor(index/4)+y)*cellHeight;
@@ -71,9 +83,9 @@
   }
   let loaded;
   function paint(element,state='idle',phase=0,facing=1,still=false) {
-    const sheet=state==='walk'?'walk':'poses',rows=4;
+    const sheet=state==='walk'?'walk':['fly','hover','cartwheel'].includes(state)?'actions':'poses',rows=sheet==='actions'?1:4;
     const walkPhase=((phase%16)+16)%16,walkIndex=Math.floor(walkPhase);
-    const index=sheet==='walk'?walkIndex:state==='jump'?[5,6][Math.min(1,Math.floor(phase))]:state==='held'?[12,13][Math.floor(phase)%2]:poses[state]??0;
+    const index=sheet==='walk'?walkIndex:state==='fly'?0:state==='hover'?1:state==='cartwheel'?(phase>=1?3:2):state==='jump'?[5,6][Math.min(1,Math.floor(phase))]:state==='held'?[12,13][Math.floor(phase)%2]:poses[state]??0;
     const key=[state,index,facing].join(':');
     if(element._taviPaintKey===key)return;
     const original=decoded[sheet];if(!original)return;

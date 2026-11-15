@@ -2,6 +2,7 @@
 [data-state=idle] .tavi-frame{animation:tavi-breathe 4.5s ease-in-out infinite}
 [data-state=held] .tavi-frame{transform-origin:50% 20%;animation:tavi-held .7s ease-in-out infinite alternate}
 [data-state=land] .tavi-frame{animation:tavi-land .18s ease-out both}
+[data-action=fly] .sprite,[data-action=cartwheel] .sprite{will-change:transform}
 [data-paused=true] .tavi-frame{animation-play-state:paused!important}
 @keyframes tavi-breathe{50%{transform:translateY(-1px)}}
 @keyframes tavi-held{from{transform:rotate(-3deg)}to{transform:rotate(3deg)}}

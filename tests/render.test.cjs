@@ -4,7 +4,7 @@ const M=require('../motion-core.js');
 async function artFixture(options={}){
   const canvases=[];
   function canvas(){
-    const calls=[],transforms=[],context={globalAlpha:1,globalCompositeOperation:'source-over',clearRect(){calls.push({clear:true});},drawImage(...args){calls.push({alpha:this.globalAlpha,composite:this.globalCompositeOperation,args});},save(){transforms.push(['save']);},restore(){transforms.push(['restore']);},translate(...args){transforms.push(['translate',...args]);},scale(...args){transforms.push(['scale',...args]);}};
+    const calls=[],transforms=[],context={globalAlpha:1,globalCompositeOperation:'source-over',clearRect(){calls.push({clear:true});},drawImage(...args){calls.push({alpha:this.globalAlpha,composite:this.globalCompositeOperation,args});},save(){transforms.push(['save']);},restore(){transforms.push(['restore']);},translate(...args){transforms.push(['translate',...args]);},scale(...args){transforms.push(['scale',...args]);},rotate(...args){transforms.push(['rotate',...args]);}};
     if(!options.noPixels){
       context.getImageData=()=>({data:new Uint8ClampedArray([21,55,133,253,200,180,160,1,245,245,245,255,80,130,210,128])});
       context.putImageData=pixels=>{context.prepared=Array.from(pixels.data);};
@@ -73,7 +73,16 @@ test('Cached rig globals cannot replace the complete illustrated character',asyn
     const draws=canvas.calls.filter(c=>!c.clear);assert.ok(draws.length<=1);
     assert.equal(canvas.dataset.renderer,'frames');assert.notEqual(canvas.dataset.sheet,'rig');
   }
-  assert.equal(rendered.length,0);assert.deepEqual(Object.keys(art.images),['poses','walk']);
+  assert.equal(rendered.length,0);assert.deepEqual(Object.keys(art.images),['poses','walk','actions']);
+});
+test('Flight and cartwheel use intact illustrated poses at full opacity',async()=>{
+  const {art,canvas}=await artFixture();
+  for(const [state,phase,index] of [['fly',0,0],['hover',0,1],['cartwheel',0,2],['cartwheel',1,3]]){
+    canvas.calls.length=0;art.paint(canvas,state,phase,1);
+    const draw=canvas.calls.find(c=>!c.clear);assert.equal(draw.alpha,1);
+    assert.equal(draw.args[1],index*512);assert.equal(draw.args[2],0);
+    assert.equal(canvas.dataset.sheet,'actions');assert.equal(canvas.dataset.frame,String(index));
+  }
 });
 test('A device without motion interpolation still receives solid colored poses',async()=>{
   const globals={ChatAvatarWalkFlow:{frames:16},ChatAvatarWalkRenderer:{create(){return null;}}};

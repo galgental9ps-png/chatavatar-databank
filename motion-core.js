@@ -36,6 +36,43 @@
     const nextY = Math.max(ground, y + nextVelocity * dt);
     return { y: nextY, velocity: nextVelocity, landed: nextY === ground && nextVelocity < 0 };
   }
-  return { WALK_FRAMES, dimensions, clamp, frameAtDistance, gaitPhaseAtDistance, walkStep, fallStep, jumpStep };
+  const ease=value=>{const t=clamp(value,0,1);return t*t*(3-2*t);};
+  // Convex silhouette of the fully illustrated cartwheel pose, around its center.
+  const CARTWHEEL_HULL=[[-.3179,.4387],[-.3446,.4149],[-.2689,-.4407],[-.2495,-.4481],[.1411,-.4496],[.1961,-.4436],[.3476,.3837],[.3446,.4016],[.3194,.4283],[.2882,.4431],[-.2822,.4521]].map(([x,y])=>[x,y+.006]);
+  function actionPlan(type,x,size,viewportWidth,viewportHeight,facing=1){
+    const maxX=Math.max(0,viewportWidth-size.width),startX=clamp(x,0,maxX);
+    if(type==='fly'){
+      const maxRise=viewportHeight-size.height-22-size.ground;
+      if(maxRise<size.height*.32)return null;
+      return {type,startX,facing,peakY:size.ground+Math.min(Math.max(size.height*1.6,viewportHeight*.46),maxRise),duration:2.8,elapsed:0};
+    }
+    if(type!=='cartwheel'||viewportWidth<size.width*1.55||viewportHeight<size.height*1.18+16)return null;
+    const margin=size.width*.08,safeStart=clamp(startX,margin,Math.max(margin,maxX-margin));
+    const direction=safeStart>maxX/2?-1:1;
+    return {type,startX,safeStart,targetX:clamp(safeStart+direction*size.width*.85,margin,Math.max(margin,maxX-margin)),facing:direction,duration:1.94,elapsed:0};
+  }
+  function actionFrame(plan,seconds,size,viewportWidth,viewportHeight){
+    const t=clamp(seconds,0,plan.duration),progress=t/plan.duration,maxX=Math.max(0,viewportWidth-size.width);
+    let x=plan.startX,y=size.ground,rotation=0,pose='crouch',frame=0;
+    if(plan.type==='fly'){
+      const peak=clamp(plan.peakY,size.ground,Math.max(size.ground,viewportHeight-size.height-22));
+      if(t>=.2&&t<1.05){const p=ease((t-.2)/.85);y=size.ground+(peak-size.ground)*p;pose='fly';rotation=plan.facing*6*Math.sin(Math.PI*p);}
+      else if(t>=1.05&&t<1.75){pose='hover';y=peak+Math.sin((t-1.05)/.7*Math.PI*2)*size.height*.012;}
+      else if(t>=1.75){pose='fly';y=size.ground+(peak-size.ground)*(1-ease((t-1.75)/1.05));}
+      x=plan.startX+plan.facing*size.width*.18*Math.sin(Math.PI*clamp((t-.2)/2.6,0,1));
+    }else{
+      if(t<.18)x=plan.startX+(plan.safeStart-plan.startX)*ease(t/.18);
+      else if(t<.34){x=plan.safeStart;pose='cartwheel';}
+      else if(t<1.80){
+        const p=ease((t-.34)/1.46);x=plan.safeStart+(plan.targetX-plan.safeStart)*p;
+        rotation=plan.facing*360*p;pose='cartwheel';frame=1;
+        const radians=rotation*Math.PI/180,c=Math.cos(radians),s=Math.sin(radians);
+        const support=Math.max(...CARTWHEEL_HULL.map(([hx,hy])=>hx*plan.facing*s+hy*c));
+        y=size.ground+(support-.458)*size.height;
+      }else{x=plan.targetX;pose='cartwheel';rotation=plan.facing*360;}
+    }
+    return {x:clamp(x,0,maxX),y:Math.min(y,Math.max(size.ground,viewportHeight-size.height-4)),rotation,pose,frame,progress,done:seconds>=plan.duration};
+  }
+  return { WALK_FRAMES, dimensions, clamp, frameAtDistance, gaitPhaseAtDistance, walkStep, fallStep, jumpStep,actionPlan,actionFrame,CARTWHEEL_HULL };
 });
 
