@@ -67,7 +67,7 @@ Für den IONOS-Baukasten den Inhalt von **`body-end.html`** in den globalen Code
 
 ## GitHub Pages einmalig freigeben
 
-Im Repository **Settings → Pages → Deploy from a branch → main → /(root) → Save** auswählen. GitHub zeigt anschließend die tatsächliche veröffentlichte Adresse. Diese Einstellung benötigt einen angemeldeten Repository-Administrator. Die Anwendung benötigt nur statisches Hosting.
+Im Repository **Settings → Pages → Source: GitHub Actions** auswählen. GitHub zeigt anschließend die tatsächliche veröffentlichte Adresse. Die Datei `.github/workflows/pages.yml` prüft die Anwendung und veröffentlicht sie bei jedem Push auf `main`. Der erfolgreiche Lauf „Deploy static content to Pages“ zeigt die fertige Adresse. Die Anwendung benötigt nur statisches Hosting.
 
 Typische Adresse nach Aktivierung:
 

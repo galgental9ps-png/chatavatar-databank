@@ -2,7 +2,7 @@
 
 ## GitHub einmalig freigeben
 
-Im öffentlichen Repository `chatavatar-databank` unter **Settings → Pages** die Quelle **Deploy from a branch**, Branch **main**, Ordner **/(root)** auswählen und speichern. Die Adressen sind erst nach erfolgreicher Veröffentlichung erreichbar.
+Im öffentlichen Repository `chatavatar-databank` unter **Settings → Pages** die Quelle **GitHub Actions** auswählen. Der Workflow `.github/workflows/pages.yml` prüft und veröffentlicht die Dateien bei jedem Push auf `main`. Die Adressen sind erst nach erfolgreicher Veröffentlichung erreichbar.
 
 ## In IONOS einfügen
 

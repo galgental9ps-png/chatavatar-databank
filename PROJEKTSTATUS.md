@@ -13,7 +13,7 @@ Stand: 15.11.2026. Bei einem Chatabbruch den aktuellen Stand von `galgental9ps-p
 
 ## Veröffentlichung
 
-Für GitHub Pages aus **main** und **/(root)** vorbereitet. Die Freigabe muss unter **Settings → Pages** erfolgen. Vor der erfolgreichen Freigabe keine Erreichbarkeit der Pages-Adressen behaupten.
+Der Workflow `.github/workflows/pages.yml` prüft die Anwendung und veröffentlicht sie über GitHub Pages bei jedem Push auf `main`. Unter **Settings → Pages** ist **GitHub Actions** als Quelle vorgesehen. Vor einem erfolgreichen Deployment und HTTP-Prüfung keine Erreichbarkeit der Pages-Adressen behaupten.
 
 Nach der Freigabe Demo, Editor, Script, Grafik und JSON prüfen. Der Editor schreibt zentral nur mit eigenem GitHub-Zugang. Keine Zugangsdaten in Einbindungscode oder Wissensdatei hinterlegen.
 
