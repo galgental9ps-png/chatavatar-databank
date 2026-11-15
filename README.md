@@ -140,7 +140,7 @@ Technische Primärquellen:
 
 Tavi verwendet 16 aufeinanderfolgende Laufphasen mit vollständigem Hin- und Rückschwung der Arme, die zur tatsächlich zurückgelegten Strecke passen. Anlaufen und Anhalten werden beschleunigt bzw. abgebremst. Beim Ziehen nutzt sie eigene Halteposen, beim Loslassen eine Fallpose mit Schwerkraft, anschließend Landung und Aufstehen. Das Fallen funktioniert auch bei geöffnetem Antwortfenster. Bei pausierter oder reduzierter Bewegung wird sie ohne Fallanimation am Boden abgesetzt. Die Demo bietet Lauf- und Sprungknöpfe.
 
-Die Vereinsfarben, Wissensdaten und die Script-Adresse bleiben erhalten. Neue Grafiken: assets/tva-poses-v2.webp und assets/tva-walk-v4.webp; Steuerung: motion-core.js, mascot.js und mascot.css. Die bestehenden alten Grafiken bleiben für ältere Einbindungen vorhanden. Neue Cache-Version: tavi-motion-12. Bei alter Anzeige die Webseite vollständig neu laden.
+Die Vereinsfarben, Wissensdaten und die Script-Adresse bleiben erhalten. Neue Grafiken: assets/tva-poses-v2.webp und assets/tva-walk-v4.webp; Steuerung: motion-core.js, mascot.js und mascot.css. Die bestehenden alten Grafiken bleiben für ältere Einbindungen vorhanden. Neue Cache-Version: tavi-motion-13. Bei alter Anzeige die Webseite vollständig neu laden.
 
 Alle Tests einschließlich Bewegung ausführen: node --test tests/*.test.cjs
 
@@ -149,3 +149,5 @@ Beim Blick nach links wird nur das Brustlogo vorab gegengespiegelt. So bleibt TV
 Die Laufbilder sind farblich an die Flugposen angeglichen; der graue Schleier wurde aus der Grafik entfernt. Der Renderer verändert keine RGB-Farben und entfernt nur schwache transparente Hintergrundreste. Stand- und Flugposen bleiben unverändert.
 
 Gelegentliche Superheldinnen-Flüge: Der erste Flug startet frühestens nach 28–43 Sekunden, danach folgen jeweils 45–75 Sekunden Pause. Tavi steigt auf, schwebt kurz und landet sanft. Bei geöffnetem Chat, Pause, reduzierter Bewegung oder zu wenig Platz starten keine automatischen Flüge. Die Demo bietet den Knopf Fliegen; instance.fly() startet denselben Flug. Radschläge sind deaktiviert und aus der Oberfläche entfernt.
+
+Der Wechsel vom Stehen zum Laufen wird beim Anlaufen einmalig über 240 Millisekunden weich überblendet. Additive, gewichtete Pixel erhalten dabei die Deckkraft überlappender Körperflächen; der anschließende Laufzyklus zeichnet weiterhin genau eine vollständige Pose. Lauftempo und Fluganimation sind unverändert.

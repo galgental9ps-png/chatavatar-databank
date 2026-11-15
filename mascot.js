@@ -78,12 +78,28 @@
     if(normalized.has(image))normalized.add(atlas);
     leftAtlases[sheet]=atlas;return atlas;
   }
+  function entryPose(element,state,facing,pixels){
+    const key=[state,facing,pixels].join(':');
+    if(element._taviEntryKey===key)return element._taviEntryImage;
+    const index=poses[state]??0,image=facing<0?leftAtlas('poses'):decoded.poses;
+    const atlas=document.createElement('canvas');atlas.width=atlas.height=pixels;
+    const ctx=atlas.getContext('2d'),[width,height]=dimensions(image),reference=standing[index];
+    const scaleY=reference?.height ? .915/reference.height : 1,scaleX=reference?scaleY*.98:1;
+    const shiftY=reference?.height ? .958-(.94+scaleY*(reference.bottom-.94)) : 0;
+    // Bake the standing size and foot anchor into the outgoing picture.
+    ctx.translate(pixels*.5,pixels*(.94+shiftY));ctx.scale(scaleX,scaleY);ctx.translate(-pixels*.5,-pixels*.94);
+    ctx.drawImage(image,index%4*width/4,Math.floor(index/4)*height/4,width/4,height/4,0,0,pixels,pixels);
+    element._taviEntryKey=key;element._taviEntryImage=atlas;return atlas;
+  }
   let loaded;
-  function paint(element,state='idle',phase=0,facing=1,still=false) {
+  function paint(element,state='idle',phase=0,facing=1,still=false,entry=null) {
     const sheet=state==='walk'?'walk':['fly','hover','cartwheel'].includes(state)?'actions':'poses',rows=sheet==='actions'?1:4;
     const walkPhase=((phase%16)+16)%16,walkIndex=Math.floor(walkPhase);
     const index=sheet==='walk'?walkIndex:state==='fly'?0:state==='hover'?1:state==='cartwheel'?(phase>=1?3:2):state==='jump'?[5,6][Math.min(1,Math.floor(phase))]:state==='held'?[12,13][Math.floor(phase)%2]:poses[state]??0;
-    const key=[state,index,facing].join(':');
+    const entryProgress=state==='walk'&&!still&&entry?Math.max(0,Math.min(1,entry.progress)):1;
+    const entryBlend=entryProgress*entryProgress*(3-2*entryProgress);
+    const entryShift=entryProgress<1&&standing[poses[entry.from]]?.height ? .064 : 0;
+    const key=[state,index,facing,entryProgress<1?entry.from+':'+Math.round(entryProgress*100):''].join(':');
     if(element._taviPaintKey===key)return;
     const original=decoded[sheet];if(!original)return;
     const image=facing<0?leftAtlas(sheet):original;
@@ -91,7 +107,7 @@
     const pixels=element.width,[width,height]=dimensions(original),cellWidth=width/4,cellHeight=height/rows;
     const draw=frame=>{
       const scale=sheet==='walk'?walkScale:1;
-      const dx=sheet==='walk'?(.62-headX[frame]*scale)*pixels:0;
+      const dx=sheet==='walk'?(.62-headX[frame]*scale-entryShift*(1-entryBlend))*pixels:0;
       const dy=sheet==='walk'?(.958-floorY[frame]*scale)*pixels:0;
       ctx.drawImage(image,(frame%4)*cellWidth,Math.floor(frame/4)*cellHeight,cellWidth,cellHeight,dx,dy,pixels*scale,pixels*scale);
     };
@@ -99,7 +115,12 @@
     ctx.globalCompositeOperation='source-over';
     // Draw one complete illustrated character, keeping its original anatomy and colors.
     ctx.globalAlpha=1;ctx.filter='none';
-    draw(index);if(!normalized.has(image))draw(index);
+    if(entryProgress<1&&decoded.poses){
+      ctx.globalAlpha=1-entryBlend;ctx.drawImage(entryPose(element,entry.from,facing,pixels),entryShift*entryBlend*pixels,0);
+      // Add weighted pixels so overlapping opaque body colors stay opaque.
+      ctx.globalCompositeOperation='lighter';ctx.globalAlpha=entryBlend;draw(index);
+      ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
+    }else{draw(index);if(!normalized.has(image))draw(index);}
     ctx.filter='none';
     const reference=sheet==='poses'?standing[index]:null;
     const scaleY=reference?.height ? .915/reference.height : 1,scaleX=reference?scaleY*.98:1;
@@ -114,7 +135,7 @@
     element.dataset.facing=facing<0?'left':'right';
     element.dataset.renderer='frames';
     element.dataset.phase=String(walkPhase);
-    element.dataset.blend='0';element._taviPaintKey=key;
+    element.dataset.blend='0';element.dataset.walkEntry=String(Math.round(entryProgress*100)/100);element._taviPaintKey=key;
   }
   window.ChatAvatarArt={
     images,

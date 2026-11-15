@@ -48,6 +48,23 @@ test('Unchanged pictures are cached while consecutive walking poses still advanc
   assert.equal(canvas.calls.length,walking);
   art.paint(canvas,'walk',3.2,1);assert.ok(canvas.calls.length>walking);
 });
+test('Only the entry into walking blends poses, preserving opaque overlap and solid normal strides',async()=>{
+  const {art,canvas}=await artFixture();
+  for(const facing of [1,-1]){
+    canvas.calls.length=0;art.paint(canvas,'walk',0,facing,false,{from:'idle',progress:.5});
+    const draws=canvas.calls.filter(c=>!c.clear);
+    assert.equal(draws.length,2);assert.equal(draws[0].composite,'source-over');assert.equal(draws[1].composite,'lighter');
+    assert.equal(draws[0].alpha+draws[1].alpha,1);assert.equal(canvas.context.globalAlpha,1);
+    assert.equal(canvas.context.globalCompositeOperation,'source-over');
+    assert.equal(canvas.dataset.walkEntry,'0.5');
+    const count=canvas.calls.length;art.paint(canvas,'walk',0,facing,false,{from:'idle',progress:.75});
+    assert.ok(canvas.calls.length>count,'The transition advances even while the first stride pose is held');
+    canvas.calls.length=0;art.paint(canvas,'walk',1,facing);
+    assert.equal(canvas.calls.filter(c=>!c.clear).length,1);assert.equal(canvas.calls.at(-1).alpha,1);
+    canvas.calls.length=0;art.paint(canvas,'walk',0,facing,true,{from:'idle',progress:.5});
+    assert.equal(canvas.calls.filter(c=>!c.clear).length,1);assert.equal(canvas.calls.at(-1).alpha,1);
+  }
+});
 test('Source alpha is made solid without warming or darkening the original palette',async()=>{
   const {canvas,canvases}=await artFixture();
   const source=canvases.find(c=>c.context.prepared).context.prepared;

@@ -4,7 +4,7 @@
   if (window.ChatAvatar) return;
   const script = document.currentScript;
   const BASE = new URL('.', script.src).href;
-  const VERSION = 'tavi-motion-12';
+  const VERSION = 'tavi-motion-13';
   const deps = new Map();
   function loadScript(url) {
     if (!deps.has(url)) deps.set(url, new Promise((resolve, reject) => { const s = document.createElement('script'); s.src = url; s.onload = resolve; s.onerror = () => reject(Error('Datei konnte nicht geladen werden: ' + url)); document.head.append(s); }));
@@ -103,13 +103,19 @@
       this.character.addEventListener('click',()=>{if(this.ignoreClick){this.ignoreClick=false;return;}this.opened?this.close():this.open();});
     }
     setState(state) {
+      if(state!=='walk')this.walkEntry=null;
       if(state!==this.state){this.state=state;this.frame=0;this.stateStarted=performance.now();}
       const durations={wave:1300,talk:3200,point:1600,think:3000,celebrate:1800,land:200,recover:240,crouch:170,rest:4500};
       this.stateUntil=durations[state]?performance.now()+durations[state]:Infinity;
       this.character.dataset.state=state;this.drawFrame();
     }
     drawFrame() {
-      if(this.visual)window.ChatAvatarArt.paint(this.visual,this.state,this.motion.matches?0:this.frame,this.facing,this.paused||this.motion.matches);
+      let entry=null;
+      if(this.walkEntry&&this.state==='walk'&&!this.paused&&!this.motion.matches){
+        const progress=Math.min(1,Math.max(0,(performance.now()-this.walkEntry.started)/240));
+        if(progress<1)entry={from:this.walkEntry.from,progress};else this.walkEntry=null;
+      }
+      if(this.visual)window.ChatAvatarArt.paint(this.visual,this.state,this.motion.matches?0:this.frame,this.facing,this.paused||this.motion.matches,entry);
       const paused=String(this.paused);if(this.character.dataset.paused!==paused)this.character.dataset.paused=paused;
     }
     position() {
@@ -134,7 +140,9 @@
       const M=window.ChatAvatarMotion,s=this.size();
       this.targetX=M.clamp(Number(target)||0,0,Math.max(0,innerWidth-s.width));
       if(Math.abs(this.targetX-this.x)<20)return false;
-      this.facing=this.targetX<this.x?-1:1;this.velocity=0;this.walkDistance=0;this.turnUntil=performance.now()+140;
+      const now=performance.now();
+      this.walkEntry={from:this.state==='walk'?'idle':this.state,started:now};
+      this.facing=this.targetX<this.x?-1:1;this.velocity=0;this.walkDistance=0;this.turnUntil=now+140;
       this.setState('walk');return true;
     }
     jump() {
