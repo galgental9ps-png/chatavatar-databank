@@ -1,0 +1,2106 @@
+{
+  "schemaVersion": 1,
+  "id": "tva-augsburg",
+  "updatedAt": "2026-11-15",
+  "organization": {
+    "name": "Turnverein Augsburg 1847 e.V.",
+    "shortName": "TVA",
+    "website": "https://www.tvaugsburg.de/",
+    "greeting": "Hallo! Ich bin Tavi, Ihre TVA-Superheldin. Suchen Sie einen Kinderkurs, die Öffnungszeiten oder Ihr nächstes Sportangebot? Wählen Sie einfach ein Thema.",
+    "fallback": "Dazu habe ich noch keine passende, hinterlegte Antwort. Fragen Sie bitte die TVA-Infotheke unter 0821 / 573715 oder info@tvaugsburg.de. Freie Plätze und kurzfristige Änderungen kann ich nicht live prüfen."
+  },
+  "avatar": {
+    "name": "Tavi",
+    "subtitle": "Ihre TVA-Superheldin",
+    "color": "#165dde"
+  },
+  "categories": [
+    {
+      "id": "service",
+      "label": "Service & Zeiten",
+      "icon": "◷"
+    },
+    {
+      "id": "kinder",
+      "label": "Kinder & Familie",
+      "icon": "✦"
+    },
+    {
+      "id": "fitness",
+      "label": "Fitness & Cycling",
+      "icon": "↗"
+    },
+    {
+      "id": "mitglied",
+      "label": "Mitgliedschaft",
+      "icon": "♡"
+    },
+    {
+      "id": "sport",
+      "label": "Sportarten",
+      "icon": "⚑"
+    },
+    {
+      "id": "gesundheit",
+      "label": "Gesundheit & Wellness",
+      "icon": "✚"
+    },
+    {
+      "id": "verein",
+      "label": "Über den TVA",
+      "icon": "⌂"
+    }
+  ],
+  "suggested": [
+    "kinderkurse",
+    "oeffnungszeiten",
+    "stundenplaene",
+    "mitglied-werden",
+    "cycling",
+    "kontakt"
+  ],
+  "entries": [
+    {
+      "id": "oeffnungszeiten",
+      "category": "service",
+      "question": "Brauchen Sie die Öffnungszeiten?",
+      "answer": "Montag–Freitag: 07:45–21:45 Uhr.\nSamstag, Sonntag und Feiertage: 07:45–13:15 und 14:45–20:45 Uhr.\nOstersonntag nur vormittags. Geschlossen: Heiligabend, 1. Weihnachtsfeiertag, Neujahr und Karfreitag.\nKurzfristige Abweichungen bitte beim TVA prüfen.",
+      "keywords": [
+        "öffnungszeiten",
+        "oeffnungszeiten",
+        "offen",
+        "uhrzeit",
+        "wochenende",
+        "sonntag",
+        "feiertag"
+      ],
+      "suggestions": [
+        "saunazeiten",
+        "telefonzeiten",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/kontakt-anfahrt"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/kontakt-anfahrt",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2026-12-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 100
+    },
+    {
+      "id": "saunazeiten",
+      "category": "service",
+      "question": "Wann ist die Sauna geöffnet?",
+      "answer": "Montag–Freitag: 09:30–21:15 Uhr.\nSamstag, Sonntag und Feiertage: 08:15–12:45 und 14:45–20:15 Uhr.\nDie Saunazeiten unterscheiden sich von den allgemeinen Öffnungszeiten.",
+      "keywords": [
+        "sauna",
+        "saunazeiten",
+        "wellness"
+      ],
+      "suggestions": [
+        "oeffnungszeiten",
+        "wellness"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/kontakt-anfahrt"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/kontakt-anfahrt",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2026-12-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 70
+    },
+    {
+      "id": "telefonzeiten",
+      "category": "service",
+      "question": "Wann ist der TVA telefonisch erreichbar?",
+      "answer": "Allgemein: Montag–Freitag 09:00–12:30, 15:00–17:00 und 19:30–21:00 Uhr; Samstag/Sonntag 10:00–12:00 und 16:00–20:15 Uhr.\nMitgliederverwaltung: Montag–Freitag 09:00–12:30 Uhr.",
+      "keywords": [
+        "telefon",
+        "telefonzeiten",
+        "mitgliederverwaltung",
+        "erreichbar",
+        "anrufen"
+      ],
+      "suggestions": [
+        "kontakt",
+        "oeffnungszeiten"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/kontakt-anfahrt"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/kontakt-anfahrt",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2026-12-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "kontakt",
+      "category": "service",
+      "question": "Wie erreiche ich den TVA?",
+      "answer": "Turnverein Augsburg 1847 e.V.\nGabelsbergerstr. 64, 86199 Augsburg\nTelefon: 0821 / 573715\nE-Mail: info@tvaugsburg.de",
+      "keywords": [
+        "adresse",
+        "anschrift",
+        "anfahrt",
+        "email",
+        "e-mail",
+        "kontakt",
+        "infotheke",
+        "telefon"
+      ],
+      "suggestions": [
+        "telefonzeiten",
+        "parken"
+      ],
+      "links": [
+        {
+          "label": "TVA anrufen",
+          "url": "tel:+49821573715"
+        },
+        {
+          "label": "E-Mail schreiben",
+          "url": "mailto:info@tvaugsburg.de"
+        },
+        {
+          "label": "Anfahrt & Kontakt",
+          "url": "https://www.tvaugsburg.de/kontakt-anfahrt"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/kontakt-anfahrt",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 95
+    },
+    {
+      "id": "parken",
+      "category": "service",
+      "question": "Gibt es Parkplätze am TVA?",
+      "answer": "Die Fitnessseite nennt 150 Stellplätze auf dem Gelände. Bei Bedarf verweist sie zusätzlich auf den Parkplatz P5 am Rosenaustadion. Eine freie Parkmöglichkeit kann ich nicht live zusagen.",
+      "keywords": [
+        "parkplatz",
+        "parken",
+        "auto",
+        "rosenaustadion",
+        "p5"
+      ],
+      "suggestions": [
+        "kontakt",
+        "oeffnungszeiten"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/kraft-cardio"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/kraft-cardio",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "stundenplaene",
+      "category": "service",
+      "question": "Wo finde ich die aktuellen Stundenpläne?",
+      "answer": "Unter „Stundenpläne“ stellt der TVA Programme für Abteilungssport, Studio, Kinderkurse und REHA Sport als PDF bereit. Bitte dort Kurszeiten, Räume und aktuelle Fassungen prüfen.",
+      "keywords": [
+        "stundenplan",
+        "stundenpläne",
+        "stundenplaene",
+        "kursplan",
+        "trainingszeiten",
+        "programm",
+        "pdf"
+      ],
+      "suggestions": [
+        "kinderkurse",
+        "group-fitness",
+        "rehasport"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/stundenplaene"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/stundenplaene",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 95
+    },
+    {
+      "id": "kinderkurse",
+      "category": "kinder",
+      "question": "Wollen Sie zu den Kinderkursen?",
+      "answer": "In der Kinderwelt finden Sie Baby- und Kinderangebote, mit und ohne Eltern.\nWichtig: Der aktuelle Hinweis nennt für laufende Kurse bis Ende Juli 2027 die Anmeldung vor Ort an der TVA-Infotheke. Die Online-Buchung ist laut diesem Hinweis deaktiviert; weiter unten stehen noch ältere Anmeldeinformationen. Bitte die Infotheke fragen.",
+      "keywords": [
+        "kinder",
+        "kinderkurse",
+        "kinderkurs",
+        "eltern",
+        "familie",
+        "anmeldung",
+        "kind"
+      ],
+      "suggestions": [
+        "kinder-anmeldung",
+        "kinder-schnuppern",
+        "musikgarten",
+        "spielturnen"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/kinderwelt"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/kinderwelt",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2026-12-01",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 100
+    },
+    {
+      "id": "kinder-anmeldung",
+      "category": "kinder",
+      "question": "Wie melde ich mein Kind an?",
+      "answer": "Für laufende Kurse bitte vor Ort an die Infotheke wenden. Welche Gruppe noch Plätze hat, bestätigt der TVA. Ich nehme selbst keine Anmeldung vor.",
+      "keywords": [
+        "anmelden",
+        "anmeldung kinder",
+        "freie plätze",
+        "plätze",
+        "buchen",
+        "kind anmelden"
+      ],
+      "suggestions": [
+        "kontakt",
+        "kinder-schnuppern",
+        "kinderpreise"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/kinderwelt"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/kinderwelt",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2026-12-01",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 85
+    },
+    {
+      "id": "kinder-schnuppern",
+      "category": "kinder",
+      "question": "Kann mein Kind einen Kurs ausprobieren?",
+      "answer": "Die Kinderwelt nennt eine unverbindliche Schnupperteilnahme für 5 € und bittet um telefonische Terminreservierung. Bitte vor dem Besuch unter 0821 / 573715 anrufen.",
+      "keywords": [
+        "schnuppern",
+        "schnupperkurs",
+        "probetraining kinder",
+        "testen",
+        "5 euro"
+      ],
+      "suggestions": [
+        "kontakt",
+        "kinder-anmeldung"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/kinderwelt"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/kinderwelt",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2026-12-01",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "musikgarten",
+      "category": "kinder",
+      "question": "Welche Musikangebote gibt es für kleine Kinder?",
+      "answer": "Der Musikgarten verbindet Musik, Bewegung und gemeinsames Spielen. Beschrieben sind Gruppen für Babys von 4–18 Monaten, Phase 1 für 1,5–3 Jahre und Phase 2 für 3–5 Jahre. Konkrete Gruppen und Zeiten stehen im Programm.",
+      "keywords": [
+        "baby",
+        "babys",
+        "musikgarten",
+        "musik",
+        "kleinkind",
+        "1 jahr",
+        "2 jahre",
+        "3 jahre"
+      ],
+      "suggestions": [
+        "kinder-anmeldung",
+        "stundenplaene"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/musikgarten"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/musikgarten",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "spielturnen",
+      "category": "kinder",
+      "question": "Was ist Spielturnen mit Eltern?",
+      "answer": "Beim Spielturnen bewegen sich Kinder gemeinsam mit ihren Eltern durch Gerätelandschaften. Parcours, Spiele und Lieder fördern unter anderem Gleichgewicht und Koordination. Die passende Altersgruppe und den Termin bitte im aktuellen Programm prüfen.",
+      "keywords": [
+        "spielturnen",
+        "eltern kind",
+        "kleinkinder",
+        "gerätelandschaft",
+        "parcours"
+      ],
+      "suggestions": [
+        "kinder-anmeldung",
+        "bewegungsspiele"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/spielturnen"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/spielturnen",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "bewegungsspiele",
+      "category": "kinder",
+      "question": "Was machen Kinder bei Bewegungsspielen?",
+      "answer": "Gemeinsam mit ihren Eltern entdecken Kinder Gerätelandschaften, Parcours, Spiele und Lieder. Im Mittelpunkt stehen vielseitige Bewegung, Balance und Koordination.",
+      "keywords": [
+        "bewegungsspiele",
+        "balance",
+        "motorik",
+        "eltern"
+      ],
+      "suggestions": [
+        "spielturnen",
+        "kinder-anmeldung"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/bewegungsspiele"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/bewegungsspiele",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "kindertanz",
+      "category": "kinder",
+      "question": "Gibt es Kindertanz?",
+      "answer": "Ja. Im Kindertanz lernen Kinder Bewegungen aus verschiedenen Tanzrichtungen kennen. Rhythmusgefühl, Körpergefühl, Gleichgewicht und Freude an Bewegung stehen im Mittelpunkt.",
+      "keywords": [
+        "kindertanz",
+        "tanzen kinder",
+        "streetdance",
+        "tanz"
+      ],
+      "suggestions": [
+        "kinder-anmeldung",
+        "stundenplaene"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/streetdance"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/streetdance",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "kinder-leichtathletik",
+      "category": "kinder",
+      "question": "Gibt es spielerische Leichtathletik?",
+      "answer": "Ja. Kinder entdecken Laufen, Springen und Werfen über Spiele und kindgerechte Bewegungsaufgaben. Für Altersgruppe, Zeit und Anmeldung bitte das aktuelle Kinderprogramm nutzen.",
+      "keywords": [
+        "leichtathletik kinder",
+        "laufen kinder",
+        "springen",
+        "werfen"
+      ],
+      "suggestions": [
+        "kinder-anmeldung",
+        "leichtathletik"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/spielerische-leichtathletik"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/spielerische-leichtathletik",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "turnen-spass",
+      "category": "kinder",
+      "question": "Was ist „Turnen, Spiel & Spaß“?",
+      "answer": "Bewegungsgeschichten, Gerätelandschaften und Turnübungen verbinden Spiel und Bewegung. Kinder bewegen sich dabei unter Anleitung zunehmend selbstständig im Parcours.",
+      "keywords": [
+        "turnen spiel spass",
+        "turnen ohne eltern",
+        "kinderturnen"
+      ],
+      "suggestions": [
+        "kinder-anmeldung",
+        "turnen"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/turnen-spiel-und-spass"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/turnen-spiel-und-spass",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "geburtstag",
+      "category": "kinder",
+      "question": "Kann man beim TVA Kindergeburtstag feiern?",
+      "answer": "Das Angebot richtet sich an TVA-Kinder und Kinder von TVA-Mitgliedern. Es gibt Bewegungslandschaften und Spielangebote für unterschiedliche Altersgruppen. Die Seite nennt Samstagnachmittage außerhalb der Ferien. Termine werden über die offizielle Buchungsseite vergeben.",
+      "keywords": [
+        "geburtstag",
+        "kindergeburtstag",
+        "feiern",
+        "party"
+      ],
+      "suggestions": [
+        "geburtstag-details",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/kindergeburtstagsfeier"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/kindergeburtstagsfeier",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2026-12-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "geburtstag-details",
+      "category": "kinder",
+      "question": "Wie läuft ein Kindergeburtstag ab?",
+      "answer": "Genannt werden 120 Minuten am Samstag von 14:00–16:00 Uhr, bis zu zwölf Kinder und eine Pauschale von 225 €. Eine Verlängerung mit Geburtstagstisch ist möglich. Preise, Bedingungen und freie Termine bitte vor Buchung auf der Vereinsseite kontrollieren.",
+      "keywords": [
+        "geburtstag kosten",
+        "225",
+        "geburtstag dauer",
+        "teilnehmer"
+      ],
+      "suggestions": [
+        "geburtstag",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/kindergeburtstagsfeier"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/kindergeburtstagsfeier",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2026-12-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "mitglied-werden",
+      "category": "mitglied",
+      "question": "Möchten Sie Mitglied werden?",
+      "answer": "Über das offizielle Onlineformular können Sie eine Mitgliedschaft anfragen bzw. beantragen. Dort werden unter anderem persönliche Daten, gewünschte Abteilungen und das Eintrittsdatum abgefragt. Bei Minderjährigen sind Angaben der Erziehungsberechtigten erforderlich.",
+      "keywords": [
+        "mitglied",
+        "mitgliedschaft",
+        "beitritt",
+        "anmelden verein",
+        "eintritt"
+      ],
+      "suggestions": [
+        "beitrag-aufbau",
+        "grundbeitrag",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/mitglied-werden"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/mitglied-werden",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 90
+    },
+    {
+      "id": "beitrag-aufbau",
+      "category": "mitglied",
+      "question": "Wie setzt sich der Mitgliedsbeitrag zusammen?",
+      "answer": "Zum Grundbeitrag können Zusatzbeiträge für Studio, Abteilungen oder Kinderkurse kommen. Die Preisübersicht nennt außerdem 20 € einmalige Aufnahmegebühr pro Person.",
+      "keywords": [
+        "beitrag",
+        "kosten",
+        "preis",
+        "preise",
+        "gebühren",
+        "aufnahmegebühr"
+      ],
+      "suggestions": [
+        "grundbeitrag",
+        "kinderbeitrag",
+        "studiopreise"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/preise"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/preise",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2026-12-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 80
+    },
+    {
+      "id": "grundbeitrag",
+      "category": "mitglied",
+      "question": "Was kostet der Grundbeitrag für Erwachsene?",
+      "answer": "Ein Erwachsener: 15,50 € monatlich. Schüler/Studierende bis 25 Jahre: ermäßigt 12 € monatlich. Zusatzbeiträge kommen gegebenenfalls hinzu.",
+      "keywords": [
+        "erwachsene preis",
+        "grundbeitrag",
+        "student",
+        "schüler",
+        "15 50"
+      ],
+      "suggestions": [
+        "beitrag-aufbau",
+        "familienbeitrag",
+        "studiopreise"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/preise"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/preise",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2026-12-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "kinderbeitrag",
+      "category": "mitglied",
+      "question": "Was ist der Grundbeitrag für Kinder?",
+      "answer": "Für ein Kind bis zur Volljährigkeit: 9,50 € monatlich; zwei Kinder: 17 €; drei oder mehr: 23 €. Kurs- und Abteilungsbeiträge gegebenenfalls zusätzlich.",
+      "keywords": [
+        "kinderbeitrag",
+        "kinder kosten",
+        "9 50",
+        "geschwister"
+      ],
+      "suggestions": [
+        "kinderpreise",
+        "familienbeitrag"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/preise"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/preise",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2026-12-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "familienbeitrag",
+      "category": "mitglied",
+      "question": "Welche Familiengrundbeiträge gibt es?",
+      "answer": "Monatlich: ein Erwachsener + ein Kind 23 €, mit zwei oder mehr Kindern 30,50 €; Ehepaar 29 €, mit einem Kind 36,50 €, mit zwei oder mehr Kindern 40 €.",
+      "keywords": [
+        "familie",
+        "familienbeitrag",
+        "ehepaar",
+        "eltern"
+      ],
+      "suggestions": [
+        "beitrag-aufbau",
+        "mitglied-werden"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/preise"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/preise",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2026-12-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "studiopreise",
+      "category": "mitglied",
+      "question": "Was kostet die Studiomitgliedschaft zusätzlich?",
+      "answer": "Beispiele: TopCard 35 €/Monat im Jahresabo bzw. 40 € im Halbjahresabo; StudioEins 22 € bzw. 26 €. Ermäßigungen und Leistungsumfang bitte in der aktuellen Preisübersicht prüfen.",
+      "keywords": [
+        "studio preis",
+        "topcard",
+        "studioeins",
+        "fitness kosten",
+        "jahresabo"
+      ],
+      "suggestions": [
+        "beitrag-aufbau",
+        "fitnessstudio"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/preise"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/preise",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2026-12-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "kinderpreise",
+      "category": "mitglied",
+      "question": "Was kosten Kinderkurse zusätzlich?",
+      "answer": "Viele Kinder-Jahreskurse werden mit 21 € monatlich ausgewiesen. Musikgarten hat gesonderte Blockpreise. Maßgeblich ist der Preis des ausgewählten Angebots.",
+      "keywords": [
+        "kinderkurs preis",
+        "kinderkurs kosten",
+        "21 euro",
+        "musikgarten preis"
+      ],
+      "suggestions": [
+        "kinder-anmeldung",
+        "beitrag-aufbau"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/preise"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/preise",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2026-12-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "kuendigung",
+      "category": "mitglied",
+      "question": "Wo finde ich Informationen zur Kündigung?",
+      "answer": "Die TVA-Kündigungsseite erläutert den Ablauf und welche Angaben benötigt werden: vollständiger Name, Anschrift, Mitgliedsnummer und der zu kündigende Mitgliedschaftsbereich. Bitte Fristen und weitere Bedingungen direkt mit der Mitgliederverwaltung klären. Dieser Avatar verschickt keine Kündigung.",
+      "keywords": [
+        "kündigung",
+        "kuendigen",
+        "austritt",
+        "mitgliedsnummer"
+      ],
+      "suggestions": [
+        "telefonzeiten",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/kuendigung"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/kuendigung",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "fitnessstudio",
+      "category": "fitness",
+      "question": "Was bietet das TVA-Fitnessstudio?",
+      "answer": "Kraft- und Ausdauergeräte, Freihanteln sowie funktionelle Trainingsbereiche. Der TVA beschreibt individuelle Trainingspläne und Betreuung durch qualifizierte Trainer. Trainertermine zur Einführung und zur Planüberarbeitung werden dort als kostenlos genannt.",
+      "keywords": [
+        "fitnessstudio",
+        "studio",
+        "geräte",
+        "kraftraum",
+        "krafttraining",
+        "cardio"
+      ],
+      "suggestions": [
+        "studiopreise",
+        "trainingsplan",
+        "group-fitness"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/kraft-cardio"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/kraft-cardio",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 80
+    },
+    {
+      "id": "trainingsplan",
+      "category": "fitness",
+      "question": "Wie bekomme ich einen Trainingsplan?",
+      "answer": "Die Kraft-&-Cardio-Seite beschreibt ein Anamnesegespräch und einen individuellen Plan passend zu den Trainingszielen. Für den Einstieg oder eine Überarbeitung vereinbaren Sie bitte einen Trainertermin beim TVA.",
+      "keywords": [
+        "trainingsplan",
+        "trainertermin",
+        "einweisung",
+        "beratung fitness"
+      ],
+      "suggestions": [
+        "kontakt",
+        "fitnessstudio"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/kraft-cardio"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/kraft-cardio",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "group-fitness",
+      "category": "fitness",
+      "question": "Wie finde und buche ich Group Fitness?",
+      "answer": "Für Studio-Group-Fitness und einige Basisstunden ist laut TVA eine Anmeldung über die TVA-App nötig. Dort „Platzreservierung Fitness“ öffnen, Stunde wählen und die Anmeldung hinzufügen.",
+      "keywords": [
+        "group fitness",
+        "kurs buchen",
+        "reservierung",
+        "fitnesskurs",
+        "yoga",
+        "pilates"
+      ],
+      "suggestions": [
+        "tva-app",
+        "stundenplaene",
+        "app-farben"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2026-12-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 85
+    },
+    {
+      "id": "tva-app",
+      "category": "service",
+      "question": "Wie finde ich die TVA-App?",
+      "answer": "Die Vereinsseite verweist auf eine kostenlose App für Android und iOS. Als Suchbegriff wird „tv augsburg“ genannt. Für Kursreservierungen ist ein Profil erforderlich. Bei Zugangsproblemen hilft die Infotheke.",
+      "keywords": [
+        "app",
+        "android",
+        "iphone",
+        "ios",
+        "profil",
+        "zugang",
+        "passwort"
+      ],
+      "suggestions": [
+        "group-fitness",
+        "kontakt",
+        "kinder-anmeldung"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2026-12-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "app-farben",
+      "category": "fitness",
+      "question": "Was bedeuten die Farben bei der Kursreservierung?",
+      "answer": "Die TVA-Anleitung unterscheidet blaue Basisstunden und gelbe Studiostunden in „Platzreservierung Fitness“. Prüfen Sie vor der Buchung, welches Angebot Ihre Mitgliedschaft umfasst.",
+      "keywords": [
+        "blaue kurse",
+        "gelbe kurse",
+        "basis",
+        "studio reservierung"
+      ],
+      "suggestions": [
+        "group-fitness",
+        "beitrag-aufbau"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2026-12-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "cycling",
+      "category": "fitness",
+      "question": "Lust auf Indoor Cycling?",
+      "answer": "Der TVA bietet wattgesteuertes Ausdauertraining in der Gruppe. Die offizielle Cycling-Seite beschreibt Coach by Color mit fünf farbigen Trainingszonen und dem individuellen FTP-Wert als Grundlage. Das Trainingsniveau wird individuell gesteuert.",
+      "keywords": [
+        "cycling",
+        "indoor cycling",
+        "spinning",
+        "radfahren",
+        "bike",
+        "coach by color"
+      ],
+      "suggestions": [
+        "cycling-einstieg",
+        "cycling-ftp",
+        "stundenplaene"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/indoor-cycling"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/indoor-cycling",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 90
+    },
+    {
+      "id": "cycling-einstieg",
+      "category": "fitness",
+      "question": "Wie steige ich beim Indoor Cycling ein?",
+      "answer": "Laut Cycling-Seite können Neueinsteiger in fast allen Stunden beginnen und sollen sich zehn Minuten vorher beim Instruktor melden. Ein Testtermin für den FTP-Wert kann an der Infotheke vereinbart werden. Kurszeit und Platz bitte vorher prüfen.",
+      "keywords": [
+        "cycling einsteiger",
+        "neueinsteiger",
+        "erstes mal",
+        "instruktor"
+      ],
+      "suggestions": [
+        "cycling-ftp",
+        "group-fitness",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/indoor-cycling"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/indoor-cycling",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "cycling-ftp",
+      "category": "fitness",
+      "question": "Was ist der FTP-Wert beim Cycling?",
+      "answer": "Er ist die individuelle Leistungsgrundlage für die farbigen Trainingszonen. Die TVA-Seite verweist auf einen kurzen Fitnesstest; den Termin dafür vermittelt die Infotheke.",
+      "keywords": [
+        "ftp",
+        "fitnesstest",
+        "leistungstest",
+        "trainingszonen",
+        "watt"
+      ],
+      "suggestions": [
+        "cycling-einstieg",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/indoor-cycling"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/indoor-cycling",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "funktionell",
+      "category": "fitness",
+      "question": "Gibt es funktionelles Training?",
+      "answer": "Ja, funktionelles Training ist ein eigener Bereich der TVA-Fitnesswelt. Die offizielle Angebotsseite und das Studioprogramm helfen bei der Auswahl einer passenden Stunde.",
+      "keywords": [
+        "funktionelles training",
+        "functional",
+        "funktional"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "fitnessstudio"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/funktionales-training"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/funktionales-training",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "entspannung",
+      "category": "fitness",
+      "question": "Wo finde ich Entspannungsangebote?",
+      "answer": "Die TVA-Fitnesswelt hat einen Bereich „Entspannung“. Aktuelle Angebote, Zeiten und Teilnahmebedingungen bitte auf der Angebotsseite bzw. im Studioprogramm prüfen.",
+      "keywords": [
+        "entspannung",
+        "relax",
+        "ruhe"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "wellness"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/entspannung"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/entspannung",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "rehasport",
+      "category": "gesundheit",
+      "question": "Gibt es REHA Sport beim TVA?",
+      "answer": "Ja. Der TVA stellt verschiedene REHA-Sport-Angebote und einen eigenen Stundenplan bereit. Die Webseite verlinkt MyStart als Terminbuchungssystem für bereits registrierte Teilnehmende. Einstieg und passende Gruppe bitte direkt mit dem Verein abstimmen.",
+      "keywords": [
+        "reha",
+        "rehabilitation",
+        "rehasport",
+        "rezept",
+        "verordnung",
+        "mystart"
+      ],
+      "suggestions": [
+        "reha-bereiche",
+        "stundenplaene",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/reha-sport"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/reha-sport",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 75
+    },
+    {
+      "id": "reha-bereiche",
+      "category": "gesundheit",
+      "question": "Welche REHA-Sport-Bereiche gibt es?",
+      "answer": "Die Vereinsnavigation nennt unter anderem Orthopädie, Koronar, Onkologie, Pneumologie sowie Angebote für Kinder und Jugendliche. Welche Gruppe zu Ihrer Verordnung passt, klären Sie bitte mit dem REHA-Team.",
+      "keywords": [
+        "orthopädie",
+        "koronar",
+        "onkologie",
+        "pneumologie",
+        "herzsport",
+        "lunge"
+      ],
+      "suggestions": [
+        "rehasport",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/reha-sport"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/reha-sport",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "wellness",
+      "category": "gesundheit",
+      "question": "Gibt es Wellness und Massagen?",
+      "answer": "Ja. Die Wellnessseite stellt Sauna und verschiedene Massageangebote vor, darunter Sport-, Faszien- sowie Schulter-Rücken-Ölmassage. Auch Gutscheine werden angeboten. Die aktuellen Termine und Buchungswege stehen auf der Vereinsseite.",
+      "keywords": [
+        "wellness",
+        "massage",
+        "gutschein",
+        "sportmassage"
+      ],
+      "suggestions": [
+        "saunazeiten",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/wellness"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/wellness",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "firmensport",
+      "category": "gesundheit",
+      "question": "Bietet der TVA Firmensport an?",
+      "answer": "Der TVA hat einen eigenen Firmensportbereich. Die Vereinsnavigation nennt unter anderem Gesundheitskurse, Gesundheitstage und firmeneigene Sportkurse. Für ein konkretes Angebot wenden Sie sich bitte an den Verein.",
+      "keywords": [
+        "firmensport",
+        "unternehmen",
+        "betrieb",
+        "gesundheitstag",
+        "firma"
+      ],
+      "suggestions": [
+        "kontakt",
+        "stundenplaene"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/firmensport"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/firmensport",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "verein",
+      "category": "verein",
+      "question": "Was ist der TVA?",
+      "answer": "Der Turnverein Augsburg 1847 e.V. ist ein traditionsreicher Augsburger Sportverein. Sein Leitbild beschreibt Angebote für möglichst viele Menschen, gemeinsame Ziele und eine laufende Weiterentwicklung des Vereins.",
+      "keywords": [
+        "tva",
+        "turnverein",
+        "verein",
+        "über uns",
+        "geschichte",
+        "1847"
+      ],
+      "suggestions": [
+        "vorstand",
+        "geschaeftsfuehrung",
+        "sport-uebersicht"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/leitbild"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/leitbild",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 50
+    },
+    {
+      "id": "vorstand",
+      "category": "verein",
+      "question": "Wer gehört zum TVA-Vorstand?",
+      "answer": "Auf der Vorstandsseite stehen Horst Beck (1. Vorsitzender), Thilo Robeller (2. Vorsitzender), Andrea Wenzel (3. Vorsitzende), Werner Goschenhofer (Finanzreferent), Cornelia Beck (Schriftführerin) und Doris Panacek (Geschäftsführerin).",
+      "keywords": [
+        "vorstand",
+        "vorsitzender",
+        "leitung",
+        "beck",
+        "robeller"
+      ],
+      "suggestions": [
+        "geschaeftsfuehrung",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/vorstand"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/vorstand",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2026-12-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "geschaeftsfuehrung",
+      "category": "verein",
+      "question": "Wer ist in der Geschäftsführung?",
+      "answer": "Die Webseite nennt Doris Panacek als Geschäftsführerin und Christian Butz als stellvertretenden Geschäftsführer. Für konkrete Anliegen nutzen Sie bitte die zentrale Kontaktstelle.",
+      "keywords": [
+        "geschäftsführung",
+        "geschaeftsfuehrer",
+        "panacek",
+        "butz"
+      ],
+      "suggestions": [
+        "vorstand",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/geschaeftsfuehrung"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/geschaeftsfuehrung",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2026-12-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "sport-uebersicht",
+      "category": "sport",
+      "question": "Welche Sportarten kann ich entdecken?",
+      "answer": "Der TVA hat zahlreiche Abteilungen für Einzel-, Team- und Wettkampfsport. Wählen Sie hier eine Sportart oder öffnen Sie die Sportartenübersicht. Trainingszeiten und Ansprechpartner finden Sie auf den jeweiligen Abteilungsseiten.",
+      "keywords": [
+        "sportarten",
+        "abteilungen",
+        "angebote",
+        "sport"
+      ],
+      "suggestions": [
+        "badminton",
+        "basketball",
+        "turnen",
+        "schwimmen"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/sportarten"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/sportarten",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 80
+    },
+    {
+      "id": "badminton",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Badminton?",
+      "answer": "Badminton gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "badminton",
+        "federball",
+        "schläger"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/badminton"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/badminton",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "basketball",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Basketball?",
+      "answer": "Basketball gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "basketball",
+        "korb",
+        "mannschaft"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/basketball"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/basketball",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "cheersport",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Cheersport?",
+      "answer": "Cheersport gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "cheersport",
+        "cheerleading",
+        "performance cheer",
+        "tanzen"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/cheerleading"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/cheerleading",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "faustball",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Faustball?",
+      "answer": "Faustball gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "faustball",
+        "ball",
+        "team"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/faustball"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/faustball",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "fechten",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Fechten?",
+      "answer": "Fechten gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "fechten",
+        "degen",
+        "florett",
+        "säbel"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/fechten"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/fechten",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "flamenco",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Flamenco?",
+      "answer": "Flamenco gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "flamenco",
+        "tanz",
+        "spanischer tanz"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/flamenco"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/flamenco",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "floorball",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Floorball?",
+      "answer": "Floorball gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "floorball",
+        "unihockey",
+        "hockey"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/floorball"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/floorball",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "keysi",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Keysi?",
+      "answer": "Keysi gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "keysi",
+        "selbstverteidigung"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/keysi"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/keysi",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "lauf-walking",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Lauf- und Walkinggruppen?",
+      "answer": "Lauf- und Walkinggruppen gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "lauf- und walkinggruppen",
+        "laufen",
+        "walking",
+        "joggen"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/lauf-und-walkinggruppen"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/lauf-und-walkinggruppen",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "leichtathletik",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Leichtathletik?",
+      "answer": "Leichtathletik gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "leichtathletik",
+        "rennen",
+        "springen",
+        "werfen"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/leichtathletik"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/leichtathletik",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "ninjutsu",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Ninjutsu?",
+      "answer": "Ninjutsu gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "ninjutsu",
+        "kampfkunst",
+        "bujinkan"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/ninjutsu"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/ninjutsu",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "prellball",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Prellball?",
+      "answer": "Prellball gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "prellball",
+        "ballspiel"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/prellball"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/prellball",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "rhythmisch",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Rhythmische Sportgymnastik?",
+      "answer": "Rhythmische Sportgymnastik gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "rhythmische sportgymnastik",
+        "rsg",
+        "gymnastik"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/rhythmische-sportgymnastik"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/rhythmische-sportgymnastik",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "rollerderby",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Rollerderby?",
+      "answer": "Rollerderby gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "rollerderby",
+        "roller derby",
+        "rollschuhe"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/rollerderby"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/rollerderby",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "rollschuhtanz",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Rollschuhtanz?",
+      "answer": "Rollschuhtanz gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "rollschuhtanz",
+        "rollschuhe",
+        "tanz"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/rollschuhtanz"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/rollschuhtanz",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "rope-skipping",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Rope Skipping?",
+      "answer": "Rope Skipping gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "rope skipping",
+        "seilspringen",
+        "springseil"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/rope-skipping"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/rope-skipping",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "skaterhockey",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Skaterhockey?",
+      "answer": "Skaterhockey gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "skaterhockey",
+        "inline hockey",
+        "hockey"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/skaterhockey"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/skaterhockey",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "taekwondo",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Taekwondo?",
+      "answer": "Taekwondo gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "taekwondo",
+        "kampfsport",
+        "tae kwon do"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/tae-kwon-do"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/tae-kwon-do",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "tennis",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Tennis?",
+      "answer": "Tennis gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "tennis",
+        "schläger",
+        "tennisplatz"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/tennis"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/tennis",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "tischtennis",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Tischtennis?",
+      "answer": "Tischtennis gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "tischtennis",
+        "pingpong",
+        "platte"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/tischtennis"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/tischtennis",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "turnen",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Turnen?",
+      "answer": "Turnen gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "turnen",
+        "geräteturnen",
+        "kinderturnen"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/turnen"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/turnen",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "volleyball",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Volleyball?",
+      "answer": "Volleyball gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "volleyball",
+        "netz",
+        "team"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/volleyball"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/volleyball",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "wandern",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Wandergruppe?",
+      "answer": "Wandergruppe gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "wandergruppe",
+        "wandern",
+        "ausflug"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/wandergruppe"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/wandergruppe",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "wassergymnastik",
+      "category": "sport",
+      "question": "Interessieren Sie sich für Wassergymnastik?",
+      "answer": "Wassergymnastik gehört zum öffentlich aufgeführten TVA-Angebot. Auf der offiziellen Abteilungsseite finden Sie die Informationen für den Einstieg. Bitte Trainingsgruppe, Ort, Zeit und mögliche Zusatzbeiträge direkt mit der Abteilung abstimmen.",
+      "keywords": [
+        "wassergymnastik",
+        "wasser",
+        "aqua"
+      ],
+      "suggestions": [
+        "stundenplaene",
+        "beitrag-aufbau",
+        "kontakt"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/sportarten/wassergymnastik"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/sportarten/wassergymnastik",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-02-15",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "id": "schwimmen",
+      "category": "sport",
+      "question": "Was ist zur neuen Schwimmabteilung bekannt?",
+      "answer": "Der TVA kündigt an, ab Januar 2027 den bisherigen Schwimmsportbetrieb des Post SV Augsburg fortzuführen. Genannt werden Angebote für Kinder und Erwachsene, Breiten-, Nachwuchs-, Leistungs- und Masters-Schwimmen. Bis zum Start sind dies angekündigte Angebote. Die Abteilungsseite enthält weitere Informationen.",
+      "keywords": [
+        "schwimmen",
+        "schwimmkurs",
+        "post sv",
+        "masters",
+        "2027"
+      ],
+      "suggestions": [
+        "kontakt",
+        "beitrag-aufbau"
+      ],
+      "links": [
+        {
+          "label": "Auf der TVA-Webseite ansehen",
+          "url": "https://www.tvaugsburg.de/schwimmen"
+        }
+      ],
+      "sourceUrl": "https://www.tvaugsburg.de/schwimmen",
+      "verifiedAt": "2026-11-15",
+      "reviewAfter": "2027-01-01",
+      "validFrom": "",
+      "validUntil": "",
+      "enabled": true,
+      "priority": 65
+    }
+  ]
+}
