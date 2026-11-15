@@ -1,8 +1,8 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),M=require('../motion-core.js');
-test('A full travel stride advances all eight poses and loops without skipping',()=>{
- const s=M.dimensions(1400),frames=Array.from({length:8},(_,i)=>M.frameAtDistance(s.stride*(i+.05)/8,s.stride));
- assert.deepEqual(frames,[0,1,2,3,4,5,6,7]);assert.equal(M.frameAtDistance(s.stride,s.stride),0);
+test('A full travel stride advances all sixteen poses and loops without skipping',()=>{
+ const s=M.dimensions(1400),frames=Array.from({length:16},(_,i)=>M.frameAtDistance(s.stride*(i+.05)/16,s.stride));
+ assert.deepEqual(frames,Array.from({length:16},(_,i)=>i));assert.equal(M.frameAtDistance(s.stride,s.stride),0);
 });
 test('Walking accelerates, decelerates and stops before either screen edge',()=>{
  const size=M.dimensions(1400);let state={x:300,target:600,velocity:0,distance:0},peak=0;
