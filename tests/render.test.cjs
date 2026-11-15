@@ -58,7 +58,7 @@ test('Starting, turning and stopping each draw one intact opaque illustration wi
       if(draws.length){assert.equal(draws.length,1);assert.equal(draws[0].alpha,1);assert.equal(draws[0].composite,'source-over');seen.push(Number(canvas.dataset.frame));}
       assert.equal(canvas.dataset.sheet,'locomotion');assert.equal(canvas.dataset.blend,'0');
     }
-    const expected=state==='walk-start'?[0,1,2,3,4,5,6,7]:state==='walk-stop'?[7,6,5,4,3,2,1,0]:[8,9,10,11,12,1,2,3,4,5,6,7];
+    const expected=state==='walk-start'?[0,1,2,3,7]:state==='walk-stop'?[7,6,5,4,3,2,1,0]:[8,9,10,11,12,2,3,7];
     assert.deepEqual(seen,expected);
   }
   canvas.calls.length=0;art.paint(canvas,'walk',0,1,false,{from:'idle',progress:.5});

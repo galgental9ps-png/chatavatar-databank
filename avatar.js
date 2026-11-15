@@ -4,7 +4,7 @@
   if (window.ChatAvatar) return;
   const script = document.currentScript;
   const BASE = new URL('.', script.src).href;
-  const VERSION = 'tavi-motion-14';
+  const VERSION = 'tavi-motion-15';
   const deps = new Map();
   function loadScript(url) {
     if (!deps.has(url)) deps.set(url, new Promise((resolve, reject) => { const s = document.createElement('script'); s.src = url; s.onload = resolve; s.onerror = () => reject(Error('Datei konnte nicht geladen werden: ' + url)); document.head.append(s); }));
@@ -140,7 +140,8 @@
       this.targetX=M.clamp(Number(target)||0,0,Math.max(0,innerWidth-s.width));
       if(Math.abs(this.targetX-this.x)<20)return false;
       const facing=this.targetX<this.x?-1:1,turning=facing!==this.facing;
-      this.walkEntry={elapsed:0,duration:turning?.66:.44,turning,startX:this.x,travel:Math.min(s.width*.035,Math.abs(this.targetX-this.x)*.08)};
+      const duration=turning?.48:.30,moveStart=turning?.45:.30,moveDuration=duration*(1-moveStart);
+      this.walkEntry={elapsed:0,duration,moveStart,moveDuration,turning,startX:this.x,travel:Math.min(s.speed*.65*moveDuration/2,Math.abs(this.targetX-this.x)*.12)};
       this.walkExit=null;this.facing=facing;this.velocity=0;this.walkDistance=0;
       this.setState('walk');return true;
     }
@@ -227,8 +228,10 @@
             this.targetX=M.clamp(this.targetX,0,Math.max(0,innerWidth-s.width));
             if(this.walkEntry){
               const entry=this.walkEntry;entry.elapsed+=dt;
-              const progress=Math.min(1,entry.elapsed/entry.duration),step=Math.max(0,(progress-.65)/.35);
+              const progress=Math.min(1,entry.elapsed/entry.duration),step=Math.max(0,(progress-entry.moveStart)/(1-entry.moveStart));
               this.x=entry.startX+this.facing*entry.travel*step*step;
+              // Carry the same forward speed into the stride instead of accelerating from zero again.
+              this.velocity=2*entry.travel/entry.moveDuration*step;
               if(progress>=1){
                 this.walkEntry=null;this.frame=4;this.walkDistance=0;
                 const distance=Math.abs(this.targetX-this.x),cycles=Math.max(.5,Math.round(distance/s.stride*2)/2);

@@ -140,7 +140,7 @@ Technische Primärquellen:
 
 Tavi verwendet 16 aufeinanderfolgende Laufphasen mit vollständigem Hin- und Rückschwung der Arme, die zur tatsächlich zurückgelegten Strecke passen. Anlaufen und Anhalten werden beschleunigt bzw. abgebremst. Beim Ziehen nutzt sie eigene Halteposen, beim Loslassen eine Fallpose mit Schwerkraft, anschließend Landung und Aufstehen. Das Fallen funktioniert auch bei geöffnetem Antwortfenster. Bei pausierter oder reduzierter Bewegung wird sie ohne Fallanimation am Boden abgesetzt. Die Demo bietet Lauf- und Sprungknöpfe.
 
-Die Vereinsfarben, Wissensdaten und die Script-Adresse bleiben erhalten. Neue Grafiken: assets/tva-poses-v2.webp, assets/tva-walk-v4.webp und assets/tva-locomotion-v1.webp; Steuerung: motion-core.js, mascot.js und mascot.css. Die bestehenden alten Grafiken bleiben für ältere Einbindungen vorhanden. Neue Cache-Version: tavi-motion-14. Bei alter Anzeige die Webseite vollständig neu laden.
+Die Vereinsfarben, Wissensdaten und die Script-Adresse bleiben erhalten. Neue Grafiken: assets/tva-poses-v2.webp, assets/tva-walk-v4.webp und assets/tva-locomotion-v1.webp; Steuerung: motion-core.js, mascot.js und mascot.css. Die bestehenden alten Grafiken bleiben für ältere Einbindungen vorhanden. Neue Cache-Version: tavi-motion-15. Bei alter Anzeige die Webseite vollständig neu laden.
 
 Alle Tests einschließlich Bewegung ausführen: node --test tests/*.test.cjs
 
@@ -150,4 +150,6 @@ Die Laufbilder sind farblich an die Flugposen angeglichen; der graue Schleier wu
 
 Gelegentliche Superheldinnen-Flüge: Der erste Flug startet frühestens nach 28–43 Sekunden, danach folgen jeweils 45–75 Sekunden Pause. Tavi steigt auf, schwebt kurz und landet sanft. Bei geöffnetem Chat, Pause, reduzierter Bewegung oder zu wenig Platz starten keine automatischen Flüge. Die Demo bietet den Knopf Fliegen; instance.fly() startet denselben Flug. Radschläge sind deaktiviert und aus der Oberfläche entfernt.
 
-Das neue Atlas assets/tva-locomotion-v1.webp enthält echte Zwischenposen für Stehen, Drehen, Anlaufen und Anhalten. Der Stand verwendet denselben Zeichensatz wie die Übergänge. Es gibt keine Überblendungen oder transparenten Doppelbilder. Beim Richtungswechsel dreht Tavi sich über eine frontale Pose; ein normaler Start dauert 440 ms, ein Start mit Drehung 660 ms und das Anhalten 380 ms. Die Schritte enden in einer passenden Fußstellung, bevor die Arme wieder an die Hüften gehen. Hinweise erscheinen erst nach dem Anhalten. Lauftempo und Fluganimation sind unverändert.
+Das neue Atlas assets/tva-locomotion-v1.webp enthält echte Zwischenposen für Stehen, Drehen, Anlaufen und Anhalten. Der Stand verwendet denselben Zeichensatz wie die Übergänge. Es gibt keine Überblendungen oder transparenten Doppelbilder. Beim Richtungswechsel dreht Tavi sich über eine frontale Pose; ein normaler Start dauert 300 ms, ein Start mit Drehung 480 ms und das Anhalten 380 ms. Die Schritte enden in einer passenden Fußstellung, bevor die Arme wieder an die Hüften gehen. Hinweise erscheinen erst nach dem Anhalten. Lauftempo und Fluganimation sind unverändert.
+
+Die Drehung geht direkt in den Lauf über: Das Vorwärtsbewegen beginnt bereits während der letzten Drehposen, die dabei erreichte Geschwindigkeit wird in den Laufzyklus übernommen. Fast identische Wartebilder im Anlauf sind entfernt; es gibt keinen zweiten Start aus dem Stillstand.

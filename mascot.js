@@ -85,7 +85,7 @@
   }
   let loaded;
   function paint(element,state='idle',phase=0,facing=1,still=false) {
-    const path=state==='walk-turn'?[8,9,10,11,12,1,2,3,4,5,6,7]:state==='walk-start'?[0,1,2,3,4,5,6,7]:state==='walk-stop'?[7,6,5,4,3,2,1,0]:null;
+    const path=state==='walk-turn'?[8,9,10,11,12,2,3,7]:state==='walk-start'?[0,1,2,3,7]:state==='walk-stop'?[7,6,5,4,3,2,1,0]:null;
     const sheet=state==='idle'||path?'locomotion':state==='walk'?'walk':['fly','hover','cartwheel'].includes(state)?'actions':'poses',rows=sheet==='actions'?1:4;
     const walkPhase=((phase%16)+16)%16,walkIndex=Math.floor(walkPhase);
     const index=path?(still?0:path[Math.min(path.length-1,Math.floor(Math.max(0,Math.min(1,phase))*path.length))]):sheet==='locomotion'?0:sheet==='walk'?walkIndex:state==='fly'?0:state==='hover'?1:state==='cartwheel'?(phase>=1?3:2):state==='jump'?[5,6][Math.min(1,Math.floor(phase))]:state==='held'?[12,13][Math.floor(phase)%2]:poses[state]??0;

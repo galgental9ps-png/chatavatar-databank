@@ -22,7 +22,7 @@ test('Walking turns through real poses, starts gently, cruises at the same speed
   const {avatar,step,paints}=await fixture();
   avatar.setState('idle');assert.equal(avatar.walkTo(1000),true);
   assert.equal(paints.at(-1)[1],'walk-turn');assert.equal(paints.at(-1)[2],0);
-  step(.3);assert.equal(paints.at(-1)[1],'walk-turn');assert.ok(paints.at(-1)[2]>.3&&paints.at(-1)[2]<.6);
+  step(.2);assert.equal(paints.at(-1)[1],'walk-turn');assert.ok(paints.at(-1)[2]>.3&&paints.at(-1)[2]<.6);
   step(.4);assert.equal(paints.at(-1)[1],'walk');
   step(.6);assert.equal(avatar.velocity,avatar.size().speed);
   step(3);assert.ok(paints.some(p=>p[1]==='walk-stop'));
@@ -31,6 +31,18 @@ test('Walking turns through real poses, starts gently, cruises at the same speed
   assert.equal(paints.at(-1)[1],'walk-start');
   step(.5);assert.equal(paints.at(-1)[1],'walk');
   avatar.setPaused(true);assert.equal(avatar.walkEntry,null);assert.equal(avatar.walkExit,null);
+});
+test('Turning flows into the stride without a second stop or speed drop',async()=>{
+  for(const facing of [1,-1]){
+    const {avatar,step}=await fixture();avatar.x=300;avatar.facing=facing;avatar.walkTo(900);
+    const samples=[];
+    for(let i=0;i<40;i++){const x=avatar.x;step(.02);samples.push({entry:Boolean(avatar.walkEntry),travel:avatar.x-x,velocity:avatar.velocity});}
+    const end=samples.findIndex((s,i)=>i>0&&!s.entry&&samples[i-1].entry);
+    assert.ok(end>0);assert.ok(samples[end-1].travel>0,'Already moving while finishing the turn');
+    assert.ok(samples[end].velocity>avatar.size().speed*.5,'No second acceleration from rest');
+    assert.ok(samples[end+1].travel>=samples[end].travel*.95,'The first stride continues moving without a pause');
+    assert.ok(samples[end+1].velocity>=samples[end].velocity);
+  }
 });
 test('Manual flight completes once, lands safely and restores the normal sprite transform',async()=>{
   const {avatar,step}=await fixture();
