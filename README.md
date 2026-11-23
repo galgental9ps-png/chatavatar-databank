@@ -140,7 +140,7 @@ Technische Primärquellen:
 
 Tavi verwendet 16 aufeinanderfolgende Laufphasen mit vollständigem Hin- und Rückschwung der Arme, die zur tatsächlich zurückgelegten Strecke passen. Anlaufen und Anhalten werden beschleunigt bzw. abgebremst. Beim Ziehen nutzt sie eigene Halteposen, beim Loslassen eine Fallpose mit Schwerkraft, anschließend Landung und Aufstehen. Das Fallen funktioniert auch bei geöffnetem Antwortfenster. Bei pausierter oder reduzierter Bewegung wird sie ohne Fallanimation am Boden abgesetzt. Die Demo bietet Lauf- und Sprungknöpfe.
 
-Die Vereinsfarben, Wissensdaten und die Script-Adresse bleiben erhalten. Neue Grafiken: assets/tva-poses-v2.webp, assets/tva-walk-v4.webp und assets/tva-locomotion-v1.webp; Steuerung: motion-core.js, mascot.js und mascot.css. Die bestehenden alten Grafiken bleiben für ältere Einbindungen vorhanden. Neue Cache-Version: tavi-motion-16. Bei alter Anzeige die Webseite vollständig neu laden.
+Die Vereinsfarben, Wissensdaten und die Script-Adresse bleiben erhalten. Neue Grafiken: assets/tva-poses-v2.webp, assets/tva-walk-v4.webp und assets/tva-locomotion-v1.webp; Steuerung: motion-core.js, mascot.js und mascot.css. Die bestehenden alten Grafiken bleiben für ältere Einbindungen vorhanden. Neue Cache-Version: tavi-motion-17. Bei alter Anzeige die Webseite vollständig neu laden.
 
 Alle Tests einschließlich Bewegung ausführen: node --test tests/*.test.cjs
 
@@ -163,3 +163,7 @@ Kleine automatische Hüpfer, wechselnde Gesten und kürzere Standpausen machen s
 Während eines geöffneten Antwortfensters, beim Ziehen, bei Pause, ausgeblendeter Seite oder reduzierter Bewegung startet keine automatische Plauderei. Mit **Plaudern an/aus** lässt sie sich unabhängig vom Ton abschalten. **Vorlesen** aktiviert hörbare Begrüßungen, Sprüche und Antworten; bis dahin bleibt sie stumm. Laufende Sprachausgabe wird von automatischen Sprüchen nicht unterbrochen. Die Systemstimme spricht etwas ruhiger.
 
 Die Demo hat den Knopf **Tavi plaudert**. Die Instanz bietet `showChatter()`; mit `showChatter('encourage')` wählt sie einen ermutigenden Satz. `ChatAvatar.create({chatter:false})` startet mit deaktivierten automatischen Sprüchen.
+
+## Korrektur Version 17
+
+Die zufällig gewählte Staun-Pose endet nach 1,6 Sekunden. Danach kehrt Tavi in den normalen Ablauf zurück und kann wieder laufen, hüpfen und plaudern. Auswahl und Dauer der zufälligen Gesten stehen in einer gemeinsamen Tabelle. Der Regressionstest spielt jede zufällige Geste vollständig ab und prüft den anschließenden Laufstart.

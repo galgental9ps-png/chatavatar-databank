@@ -4,7 +4,10 @@
   if (window.ChatAvatar) return;
   const script = document.currentScript;
   const BASE = new URL('.', script.src).href;
-  const VERSION = 'tavi-motion-16';
+  const VERSION = 'tavi-motion-17';
+  const GESTURE_DURATIONS=Object.freeze({wave:1300,celebrate:1800,think:3000,surprised:1600});
+  const GESTURES=Object.keys(GESTURE_DURATIONS);
+  const STATE_DURATIONS=Object.freeze({...GESTURE_DURATIONS,talk:3200,point:1600,land:200,recover:240,crouch:170,rest:4500});
   const deps = new Map();
   function loadScript(url) {
     if (!deps.has(url)) deps.set(url, new Promise((resolve, reject) => { const s = document.createElement('script'); s.src = url; s.onload = resolve; s.onerror = () => reject(Error('Datei konnte nicht geladen werden: ' + url)); document.head.append(s); }));
@@ -109,8 +112,8 @@
     setState(state) {
       if(state!=='walk'){this.walkEntry=null;this.walkExit=null;}
       if(state!==this.state){this.state=state;this.frame=0;this.stateStarted=performance.now();}
-      const durations={wave:1300,talk:3200,point:1600,think:3000,celebrate:1800,land:200,recover:240,crouch:170,rest:4500};
-      this.stateUntil=durations[state]?performance.now()+durations[state]:Infinity;
+      const duration=STATE_DURATIONS[state];
+      this.stateUntil=Number.isFinite(duration)?performance.now()+duration:Infinity;
       this.character.dataset.state=state;this.drawFrame();
     }
     drawFrame() {
@@ -267,8 +270,7 @@
           } else if(this.state==='idle'&&now>this.nextHop) {
             if(!this.jump())this.nextHop=now+8000;
           } else if(this.state==='idle'&&this.tip.hidden&&now>this.nextGesture) {
-            const gestures=['wave','celebrate','think','surprised'];
-            this.setState(gestures[Math.floor(Math.random()*gestures.length)]);
+            this.setState(GESTURES[Math.floor(Math.random()*GESTURES.length)]);
             this.nextGesture=now+8500+Math.random()*6500;
           } else if(this.state==='idle'&&now>this.nextWalk) {
             const max=Math.max(0,innerWidth-s.width-8),distance=Math.min(max,140+Math.random()*250);

@@ -1,6 +1,6 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),M=require('../motion-core.js'),P=require('../personality-core.js');
-async function fixture(width=1400,height=900){
+async function fixture(width=1400,height=900,random=.5){
   class Element{
     constructor(){this.style={setProperty(){}};this.dataset={};this.children=[];this.listeners={};this.hidden=false;}
     append(...nodes){this.children.push(...nodes);}replaceChildren(...nodes){this.children=nodes;}
@@ -13,7 +13,7 @@ async function fixture(width=1400,height=900){
   const speech={speaking:false,cancel(){this.speaking=false;},speak(line){spoken.push(line);}};
   const window={ChatAvatarMotion:M,ChatAvatarPersonality:P,speechSynthesis:speech,ChatAvatarKnowledge:{validate:p=>p,active:()=>true,stale:()=>false,search:()=>[]},ChatAvatarArt:{preload:async()=>{},create:()=>new Element(),paint(...args){paints.push(args);}},addEventListener(){},removeEventListener(){}};
   const document={currentScript:{src:'https://example.invalid/avatar.js',dataset:{manual:'true'}},body:new Element(),hidden:false,createElement:()=>new Element(),addEventListener(){},removeEventListener(){}};
-  const math=Object.create(Math);math.random=()=>.5;
+  const math=Object.create(Math);math.random=()=>random;
   vm.runInNewContext(fs.readFileSync(require.resolve('../avatar.js'),'utf8'),{window,document,URL,innerWidth:width,innerHeight:height,performance:{now:()=>clock.now},Math:math,matchMedia:()=>motion,requestAnimationFrame:()=>1,cancelAnimationFrame(){},setTimeout:(fn,delay)=>{timers.set(++timerId,{fn,delay});return timerId;},clearTimeout:id=>timers.delete(id),speechSynthesis:speech,SpeechSynthesisUtterance:class{constructor(text){this.text=text;}},CustomEvent:class{},location:{protocol:'https:'}});
   const avatar=window.ChatAvatar.create({knowledge:pack});await avatar.ready;assert.equal(avatar.error,undefined);avatar.nextWalk=avatar.nextHop=avatar.nextGesture=avatar.nextChatter=Infinity;
   function step(seconds){const count=Math.ceil(seconds/.02);for(let i=0;i<count;i++){clock.now+=20;avatar.tick(clock.now);}}
@@ -129,4 +129,16 @@ test('Ambient chatter can be switched off while a requested line still works wit
   chatter.onclick();assert.equal(avatar.chatterEnabled,false);avatar.opened=false;
   assert.equal(avatar.showChatter(),false);avatar.setPaused(true);
   assert.equal(avatar.showChatter('idle',{userInitiated:true}),true);assert.equal(avatar.state,'idle');
+});
+
+test('Every randomly chosen gesture ends on its own and Tavi resumes walking afterwards',async()=>{
+  for(const random of [.01,.26,.51,.99]){
+    const {avatar,clock,step}=await fixture(1400,900,random);
+    avatar.nextAction=avatar.nextHop=avatar.nextChatter=Infinity;avatar.nextGesture=0;
+    clock.now=20;avatar.tick(clock.now);
+    const gesture=avatar.state;assert.notEqual(gesture,'idle');
+    step(4);assert.equal(avatar.state,'idle',gesture+' must finish without a click');
+    const x=avatar.x;avatar.nextWalk=0;step(.65);
+    assert.equal(avatar.state,'walk',gesture+' must not block the next walk');assert.ok(avatar.x<x);
+  }
 });
