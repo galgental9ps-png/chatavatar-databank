@@ -7,12 +7,12 @@ globalThis.ChatAvatarDefaultKnowledge = {
     "name": "Turnverein Augsburg 1847 e.V.",
     "shortName": "TVA",
     "website": "https://www.tvaugsburg.de/",
-    "greeting": "Hallo! Ich bin Tavi, Ihre TVA-Superheldin. Suchen Sie einen Kinderkurs, die Öffnungszeiten oder Ihr nächstes Sportangebot? Wählen Sie einfach ein Thema.",
-    "fallback": "Dazu habe ich noch keine passende, hinterlegte Antwort. Fragen Sie bitte die TVA-Infotheke unter 0821 / 573715 oder info@tvaugsburg.de. Freie Plätze und kurzfristige Änderungen kann ich nicht live prüfen."
+    "greeting": "Hallo, ich bin Tavi! Schön, dass du da bist. Möchtest du Kinderkurse, Sportangebote oder den TVA entdecken? Tippe einfach auf ein Thema. Ich helfe kleinen und großen Entdeckern gern weiter.",
+    "fallback": "Dazu kenne ich noch keine passende, hinterlegte Antwort. Das TVA-Team hilft dir gern: 0821 / 573715 oder info@tvaugsburg.de. Freie Plätze und kurzfristige Änderungen kann ich nicht live prüfen."
   },
   "avatar": {
     "name": "Tavi",
-    "subtitle": "Ihre TVA-Superheldin",
+    "subtitle": "Deine TVA-Superheldin",
     "color": "#165dde"
   },
   "categories": [
@@ -64,7 +64,7 @@ globalThis.ChatAvatarDefaultKnowledge = {
     {
       "id": "oeffnungszeiten",
       "category": "service",
-      "question": "Brauchen Sie die Öffnungszeiten?",
+      "question": "Wann hat der TVA geöffnet?",
       "answer": "Montag–Freitag: 07:45–21:45 Uhr.\nSamstag, Sonntag und Feiertage: 07:45–13:15 und 14:45–20:45 Uhr.\nOstersonntag nur vormittags. Geschlossen: Heiligabend, 1. Weihnachtsfeiertag, Neujahr und Karfreitag.\nKurzfristige Abweichungen bitte beim TVA prüfen.",
       "keywords": [
         "öffnungszeiten",
@@ -259,7 +259,7 @@ globalThis.ChatAvatarDefaultKnowledge = {
     {
       "id": "kinderkurse",
       "category": "kinder",
-      "question": "Wollen Sie zu den Kinderkursen?",
+      "question": "Möchtest du die Kinderkurse entdecken?",
       "answer": "In der Kinderwelt finden Sie Baby- und Kinderangebote, mit und ohne Eltern.\nWichtig: Der aktuelle Hinweis nennt für laufende Kurse bis Ende Juli 2027 die Anmeldung vor Ort an der TVA-Infotheke. Die Online-Buchung ist laut diesem Hinweis deaktiviert; weiter unten stehen noch ältere Anmeldeinformationen. Bitte die Infotheke fragen.",
       "keywords": [
         "kinder",
@@ -591,7 +591,7 @@ globalThis.ChatAvatarDefaultKnowledge = {
     {
       "id": "mitglied-werden",
       "category": "mitglied",
-      "question": "Möchten Sie Mitglied werden?",
+      "question": "Möchtest du Mitglied werden?",
       "answer": "Über das offizielle Onlineformular können Sie eine Mitgliedschaft anfragen bzw. beantragen. Dort werden unter anderem persönliche Daten, gewünschte Abteilungen und das Eintrittsdatum abgefragt. Bei Minderjährigen sind Angaben der Erziehungsberechtigten erforderlich.",
       "keywords": [
         "mitglied",
@@ -2105,4 +2105,3 @@ globalThis.ChatAvatarDefaultKnowledge = {
     }
   ]
 };
-

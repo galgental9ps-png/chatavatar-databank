@@ -4,7 +4,7 @@
   if (window.ChatAvatar) return;
   const script = document.currentScript;
   const BASE = new URL('.', script.src).href;
-  const VERSION = 'tavi-motion-15';
+  const VERSION = 'tavi-motion-16';
   const deps = new Map();
   function loadScript(url) {
     if (!deps.has(url)) deps.set(url, new Promise((resolve, reject) => { const s = document.createElement('script'); s.src = url; s.onload = resolve; s.onerror = () => reject(Error('Datei konnte nicht geladen werden: ' + url)); document.head.append(s); }));
@@ -13,12 +13,13 @@
   const engineReady = Promise.all([
     window.ChatAvatarKnowledge ? Promise.resolve() : loadScript(BASE + 'knowledge-core.js'),
     window.ChatAvatarMotion ? Promise.resolve() : loadScript(BASE + 'motion-core.js?v=' + VERSION),
-    window.ChatAvatarArt ? Promise.resolve() : loadScript(BASE + 'mascot.js?v=' + VERSION)
+    window.ChatAvatarArt ? Promise.resolve() : loadScript(BASE + 'mascot.js?v=' + VERSION),
+    window.ChatAvatarPersonality ? Promise.resolve() : loadScript(BASE + 'personality-core.js?v=' + VERSION)
   ]);
   function el(tag, cls, text) { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
   class Mascot {
     constructor(options = {}) {
-      this.options = options; this.x = Math.max(8, innerWidth - 210); this.y = 10; this.state = 'idle'; this.facing = 1; this.opened = false; this.paused = false; this.voice = false; this.hidden = false; this.destroyed = false; this.category = ''; this.timers = new Set(); this.frame = 0; this.walkDistance = 0; this.velocity = 0; this.fallVelocity = 0; this.nextWalk = performance.now() + 4500; this.nextAction = performance.now()+28000+Math.random()*15000; this.action=null; this.last = 0; this.stateUntil = Infinity;
+      this.options = options; this.x = Math.max(8, innerWidth - 210); this.y = 10; this.state = 'idle'; this.facing = 1; this.opened = false; this.paused = false; this.voice = false; this.hidden = false; this.destroyed = false; this.category = ''; this.timers = new Set(); this.frame = 0; this.walkDistance = 0; this.velocity = 0; this.fallVelocity = 0; this.nextWalk = performance.now() + 3500; this.nextAction = performance.now()+22000+Math.random()*12000; this.nextHop=performance.now()+11000+Math.random()*5000; this.nextGesture=performance.now()+6500+Math.random()*5000; this.nextChatter=performance.now()+9000; this.chatterEnabled=options.chatter!==false; this.action=null; this.last = 0; this.stateUntil = Infinity;
       this.motion = matchMedia('(prefers-reduced-motion: reduce)');
       this.onMotion = () => this.setPaused(this.motion.matches);
       this.motion.addEventListener('change', this.onMotion); this.paused = this.motion.matches;
@@ -30,7 +31,7 @@
       this.panel = el('section', 'panel'); this.panel.hidden = true; this.panel.setAttribute('role', 'region'); this.panel.setAttribute('aria-label', 'Antworten der Vereinsheldin');
       this.launcher = el('button', 'launcher', 'Heldin rufen'); this.launcher.hidden = true;
       this.shadow.append(this.tip, this.character, this.panel, this.launcher); document.body.append(this.host);
-      this.tip.addEventListener('click', () => { this.open(); if (this.tipEntry) this.answer(this.tipEntry); });
+      this.tip.addEventListener('click', () => { const entry=this.tipEntry; this.open(); if (entry) this.answer(entry); });
       this.launcher.addEventListener('click', () => { this.hidden = false; this.launcher.hidden = true; this.character.hidden = false; this.open(); });
       this.onKey = e => { if (e.key === 'Escape' && this.opened) this.close(); };
       this.onResize = () => this.position(); this.onVisibility = () => { this.last = 0; };
@@ -39,10 +40,12 @@
       this.tick = this.tick.bind(this); this.raf = requestAnimationFrame(this.tick);
     }
     later(fn, delay) { const id = setTimeout(() => { this.timers.delete(id); if (!this.destroyed) fn(); }, delay); this.timers.add(id); return id; }
+    cancelLater(id) { if(id==null)return;clearTimeout(id);this.timers.delete(id); }
     async init() {
       try {
         await engineReady; if (this.destroyed) return;
         await window.ChatAvatarArt.preload(); if (this.destroyed) return;
+        this.personality=window.ChatAvatarPersonality.createDeck();
         this.visual = window.ChatAvatarArt.create(); this.sprite.replaceChildren(this.visual); this.drawFrame();
         const K = window.ChatAvatarKnowledge; let data = this.options.knowledge;
         if (!data) {
@@ -57,7 +60,7 @@
           }
         }
         if (this.destroyed) return;
-        this.setKnowledge(data); this.later(() => this.showTip(), 1800); return this;
+        this.setKnowledge(data); this.greetingTimer=this.later(() => this.showChatter('greeting'), 1400); return this;
       } catch (err) {
         if (this.destroyed) return;
         this.character.hidden = true; this.tip.hidden = true;
@@ -86,7 +89,7 @@
         if(!this.drag||e.pointerId!==this.drag.pointer)return;
         const dx=e.clientX-this.drag.startX,dy=e.clientY-this.drag.startY;
         if(Math.hypot(dx,dy)>6)this.drag.moved=true;
-        if(this.drag.moved){this.setState('held');this.tip.hidden=true;this.x=this.drag.x+dx;this.y=this.drag.y-dy;this.position();}
+        if(this.drag.moved){this.setState('held');this.hideTip();this.x=this.drag.x+dx;this.y=this.drag.y-dy;this.position();}
       });
       const release=e=>{
         if(!this.drag||e.pointerId!==this.drag.pointer)return;
@@ -96,7 +99,8 @@
           if(this.paused||this.motion.matches){this.y=this.size().ground;this.setState('idle');this.position();}
           else this.setState(this.y>this.size().ground+.5?'fall':'land');
         }
-        this.nextWalk=performance.now()+5500;
+        this.nextWalk=performance.now()+3500;
+        this.nextHop=performance.now()+12000;
         this.nextAction=performance.now()+25000;
       };
       this.character.addEventListener('pointerup',release);this.character.addEventListener('pointercancel',release);
@@ -131,7 +135,8 @@
     }
     prepareMovement() {
       if(!this.pack||this.paused||this.motion.matches||this.hidden||this.drag||this.action||this.y>this.size().ground+.5||['jump','fall','land','recover','crouch'].includes(this.state))return false;
-      this.opened=false;this.panel.hidden=true;this.character.setAttribute('aria-expanded','false');this.tip.hidden=true;
+      this.opened=false;this.panel.hidden=true;this.character.setAttribute('aria-expanded','false');
+      if(this.tipKind!=='chatter')this.hideTip();
       return true;
     }
     walkTo(target) {
@@ -146,8 +151,12 @@
       this.setState('walk');return true;
     }
     jump() {
+      const room=Math.max(0,innerHeight-this.size().height-this.size().ground-4),height=Math.min(this.size().height*.44,room);
+      if(height<8)return false;
       if(!this.prepareMovement())return false;
-      this.velocity=0;this.jumpVelocity=440;this.nextAction=Math.max(this.nextAction,performance.now()+20000);this.setState('crouch');return true;
+      this.velocity=0;this.jumpVelocity=Math.sqrt(2*1100*height);this.nextHop=performance.now()+14000+Math.random()*10000;
+      this.nextAction=Math.max(this.nextAction,performance.now()+8000);this.setState('crouch');
+      this.showChatter('jump',{animate:false,replace:true});return true;
     }
     fly(){return this.startAction('fly');}
     cartwheel(){return false;}
@@ -158,7 +167,7 @@
       if(!plan||!this.prepareMovement())return false;
       plan.automatic=automatic;this.action=plan;this.facing=plan.facing;this.velocity=0;this.fallVelocity=0;
       this.character.dataset.action=type;this.character.dataset.actionProgress='0';
-      this.applyActionRotation(0);this.setState('crouch');return true;
+      this.applyActionRotation(0);this.setState('crouch');this.showChatter('fly',{animate:false,replace:true});return true;
     }
     applyActionRotation(angle){
       if(this.actionAngle===angle)return;
@@ -176,24 +185,28 @@
       const key='flightCount';
       this.character.dataset[key]=String((Number(this.character.dataset[key])||0)+1);
       this.clearAction();this.character.dataset.actionProgress='1';this.land();this.position();
-      this.nextAction=performance.now()+45000+Math.random()*30000;
+      this.nextAction=performance.now()+35000+Math.random()*20000;
     }
     setPaused(value) {
       this.clearAction();
+      this.hideTip();
       this.paused=Boolean(value);this.velocity=0;this.fallVelocity=0;this.jumpVelocity=0;
       if(this.paused){this.y=this.size().ground;this.position();}
-      this.setState('idle');this.nextWalk=performance.now()+3000;this.nextAction=performance.now()+30000;this.render();
+      if(this.paused&&this.voice&&'speechSynthesis' in window)speechSynthesis.cancel();
+      this.setState('idle');this.nextWalk=performance.now()+3000;this.nextHop=performance.now()+12000;this.nextChatter=performance.now()+6500;this.nextAction=performance.now()+30000;this.render();
     }
     land() {
       this.fallVelocity=0;this.jumpVelocity=0;this.y=this.size().ground;
       this.character.dataset.landingCount=String((Number(this.character.dataset.landingCount)||0)+1);
-      this.setState('land');this.nextWalk=performance.now()+5000;
+      this.setState('land');this.nextWalk=performance.now()+2200+Math.random()*1800;
+      this.nextHop=Math.max(this.nextHop,performance.now()+8000);
     }
     tick(now) {
       if(this.destroyed)return;
       const dt=Math.min(.05,this.last?(now-this.last)/1000:0);this.last=now;
       if(!document.hidden&&!this.hidden&&this.pack&&!this.paused) {
         const M=window.ChatAvatarMotion,s=this.size();
+        if(this.chatterEnabled&&!this.drag&&!this.action&&!this.opened&&!this.character.matches(':focus-visible')&&!this.motion.matches&&this.tip.hidden&&['idle','walk'].includes(this.state)&&now>=this.nextChatter)this.showChatter();
         if(this.drag) {
           if(this.drag.moved&&!this.motion.matches)this.frame=Math.floor((now-this.stateStarted)/350)%2;
         } else if(this.action){
@@ -240,7 +253,7 @@
             }else if(this.walkExit){
               this.walkExit.elapsed+=dt;
               if(this.walkExit.elapsed>=this.walkExit.duration){
-                this.setState('idle');this.nextWalk=now+4500+Math.random()*4500;
+                this.setState('idle');this.nextWalk=now+2800+Math.random()*2400;
                 this.tipCount=(this.tipCount||0)+1;if(this.tipCount%3===0)this.later(()=>this.showTip(),600);
               }
             }else{
@@ -251,6 +264,12 @@
             this.position();
           } else if(this.state==='idle'&&now>this.nextAction) {
             if(!this.startAction('fly',true))this.nextAction=now+20000;
+          } else if(this.state==='idle'&&now>this.nextHop) {
+            if(!this.jump())this.nextHop=now+8000;
+          } else if(this.state==='idle'&&this.tip.hidden&&now>this.nextGesture) {
+            const gestures=['wave','celebrate','think','surprised'];
+            this.setState(gestures[Math.floor(Math.random()*gestures.length)]);
+            this.nextGesture=now+8500+Math.random()*6500;
           } else if(this.state==='idle'&&now>this.nextWalk) {
             const max=Math.max(0,innerWidth-s.width-8),distance=Math.min(max,140+Math.random()*250);
             const target=this.x>max/2?Math.max(8,this.x-distance):Math.min(max,this.x+distance);
@@ -261,20 +280,36 @@
       if(!document.hidden&&!this.hidden)this.drawFrame();this.raf=requestAnimationFrame(this.tick);
     }
     showTip() {
-      if (!this.pack || this.opened || this.hidden || this.drag || this.action || this.paused || this.y > this.size().ground + .5 || ['walk','jump','crouch','land','recover'].includes(this.state)) return;
+      if (!this.pack || this.destroyed || document.hidden || this.opened || this.hidden || this.drag || this.action || this.paused || !this.tip.hidden || this.y > this.size().ground + .5 || ['walk','jump','crouch','land','recover'].includes(this.state)) return false;
       const ids = this.pack.suggested, id = ids[(this.tipIndex || 0) % Math.max(1, ids.length)]; this.tipIndex = (this.tipIndex || 0) + 1;
       const e = this.pack.entries.find(e => e.id === id && window.ChatAvatarKnowledge.active(e)); if (!e) return;
-      this.tipEntry = e.id; this.tip.replaceChildren(el('div', '', e.question), el('span', '', 'Anklicken · Ich helfe Ihnen →')); this.tip.hidden = false; this.setState('wave'); this.position();
-      this.later(() => { this.tip.hidden = true; if (this.state === 'wave' && !this.drag) this.setState('idle'); }, 9000);
+      this.showBubble(e.question,'Ein Thema antippen – ich helfe dir.',{entry:e.id,kind:'knowledge',duration:8000});this.setState('wave');return true;
     }
-    open() { if (!this.pack) return; this.cancelAction();this.nextAction=Math.max(this.nextAction,performance.now()+18000); this.hidden = false; this.character.hidden = false; this.launcher.hidden = true; this.opened = true; this.tip.hidden = true; this.panel.hidden = false; this.character.setAttribute('aria-expanded', 'true'); if (this.y <= this.size().ground + .5 && !['land','recover'].includes(this.state)) this.setState('wave'); this.render(); this.panel.querySelector('.close')?.focus({ preventScroll: true }); }
+    hideTip(){this.cancelLater(this.bubbleTimer);this.bubbleTimer=null;this.tip.hidden=true;this.tipEntry='';this.tipKind='';}
+    showBubble(text,caption,{entry='',kind='chatter',duration=7000}={}){
+      this.hideTip();this.tipEntry=entry;this.tipKind=kind;
+      this.tip.replaceChildren(el('div','',text),el('span','',caption));this.tip.hidden=false;this.position();
+      this.bubbleTimer=this.later(()=>this.hideTip(),duration);
+    }
+    showChatter(kind='auto',{animate=true,replace=false,userInitiated=false}={}){
+      if(!this.personality||!this.pack||this.destroyed||document.hidden||this.opened||this.hidden||this.drag||((this.paused||this.motion.matches)&&!userInitiated)||(!this.chatterEnabled&&!userInitiated)||(!this.tip.hidden&&!replace))return false;
+      if(!userInitiated&&this.voice&&window.speechSynthesis?.speaking)return false;
+      this.cancelLater(this.greetingTimer);
+      if(kind==='auto'){this.chatterCount=(this.chatterCount||0)+1;kind=this.state==='walk'?'walk':this.chatterCount%3===0?'encourage':'idle';}
+      const line=this.personality.next(kind);this.lastChatter=line;
+      this.showBubble(line,'Tippe mich an – ich bin für deine Fragen da.');
+      this.nextChatter=performance.now()+10000+Math.random()*7000;
+      if(animate&&!this.paused&&!this.motion.matches&&this.state==='idle')this.setState(kind==='greeting'?'wave':kind==='encourage'?'celebrate':'talk');
+      this.speak(line);return true;
+    }
+    open() { if (!this.pack) return; this.cancelAction();this.hideTip();this.nextAction=Math.max(this.nextAction,performance.now()+18000); this.hidden = false; this.character.hidden = false; this.launcher.hidden = true; this.opened = true; this.panel.hidden = false; this.character.setAttribute('aria-expanded', 'true'); if (this.y <= this.size().ground + .5 && !['land','recover'].includes(this.state)) this.setState('wave'); this.render(); this.panel.querySelector('.close')?.focus({ preventScroll: true }); }
     close() { this.opened = false; this.panel.hidden = true; this.character.setAttribute('aria-expanded', 'false'); this.nextWalk = performance.now() + 5000; if (!['fall','jump','crouch','land','recover'].includes(this.state)) this.setState('idle'); this.character.focus({ preventScroll: true }); }
-    minimize() { this.opened = false; this.hidden = true; this.panel.hidden = true; this.tip.hidden = true; this.character.hidden = true; this.launcher.hidden = false; this.character.setAttribute('aria-expanded', 'false'); this.launcher.focus(); }
+    minimize() { this.cancelAction();this.hideTip();this.opened = false; this.hidden = true; this.panel.hidden = true; this.character.hidden = true; this.launcher.hidden = false; this.character.setAttribute('aria-expanded', 'false'); this.launcher.focus(); }
     buttonFor(entry) {
       const b = el('button', 'choice'); b.type = 'button'; b.append(el('span', '', entry.question), el('span', 'arrow', '↗')); b.onclick = () => this.answer(entry.id); return b;
     }
     answer(id) { const entry = this.pack?.entries.find(e => e.id === id && window.ChatAvatarKnowledge.active(e)); if (!entry) return; this.current = id; this.render(); if (this.y <= this.size().ground + .5 && !['land','recover'].includes(this.state)) this.setState('talk'); this.speak(entry.answer); this.panel.querySelector('.answer-title')?.focus({ preventScroll: true }); this.host.dispatchEvent(new CustomEvent('chatavatar:answer', { detail: { id }, bubbles: true })); }
-    speak(text) { if (!this.voice || !('speechSynthesis' in window)) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'de-DE'; u.rate = .98; speechSynthesis.speak(u); }
+    speak(text) { if (!this.voice || !('speechSynthesis' in window)) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'de-DE'; u.rate = .95; u.pitch=1.05; speechSynthesis.speak(u); }
     render() {
       if (!this.pack) return;
       const K = window.ChatAvatarKnowledge, pack = this.pack; this.panel.replaceChildren();
@@ -293,19 +328,21 @@
         const source = el('div', 'source', current.verifiedAt ? 'Geprüft: ' + current.verifiedAt.split('-').reverse().join('.') + ' · ' : 'Noch ohne Prüfdatum · ');
         if (current.sourceUrl) { const a = el('a', '', 'Quelle ansehen'); a.href = current.sourceUrl; a.target = '_blank'; a.rel = 'noopener noreferrer'; source.append(a); } else source.append('Vom Betreiber hinterlegt'); body.append(source);
         const follow = current.suggestions.map(id => pack.entries.find(e => e.id === id && K.active(e))).filter(Boolean);
-        if (follow.length) { body.append(el('p', 'eyebrow', 'Das könnte Sie auch interessieren')); const choices = el('div', 'choices'); follow.forEach(e => choices.append(this.buttonFor(e))); body.append(choices); }
+        if (follow.length) { body.append(el('p', 'eyebrow', 'Das könnte dich auch interessieren')); const choices = el('div', 'choices'); follow.forEach(e => choices.append(this.buttonFor(e))); body.append(choices); }
       } else {
         body.append(el('p', 'greeting', pack.organization.greeting)); const cats = el('div', 'cats');
         const all = [{ id: '', label: 'Alle Themen', icon: '✦' }, ...pack.categories];
         for (const c of all) { if (c.id && !pack.entries.some(e => e.category === c.id && K.active(e))) continue; const b = el('button', 'cat', c.icon + ' ' + c.label); b.setAttribute('aria-pressed', String(this.category === c.id)); b.onclick = () => { this.category = c.id; this.render(); }; cats.append(b); } body.append(cats);
         const form = el('form', 'search'), input = el('input'); input.type = 'search'; input.placeholder = 'Thema suchen, z. B. Kinderkurse'; input.setAttribute('aria-label', 'Hinterlegtes Wissen durchsuchen'); input.maxLength = 200; const go = el('button', '', '→'); go.type = 'submit'; go.setAttribute('aria-label', 'Suchen'); form.append(input, go); body.append(form);
-        const title = el('p', 'eyebrow', this.category ? 'Passende Antworten' : 'Wie kann ich helfen?'), choices = el('div', 'choices'); body.append(title, choices);
-        const draw = query => { choices.replaceChildren(); let entries = !query && !this.category ? pack.suggested.map(id => pack.entries.find(e => e.id === id && K.active(e))).filter(Boolean) : K.search(pack, query, { category: this.category, limit: 20 }); if (!entries.length && !query) entries = K.search(pack, '', { category: this.category, limit: 12 }); entries.forEach(e => choices.append(this.buttonFor(e))); if (!entries.length) choices.append(el('p', 'empty', pack.organization.fallback)); title.textContent = query ? 'Gefundene Themen · ' + entries.length : this.category ? 'Passende Antworten' : 'Wie kann ich helfen?'; };
+        const title = el('p', 'eyebrow', this.category ? 'Passende Antworten' : 'Was möchtest du entdecken?'), choices = el('div', 'choices'); body.append(title, choices);
+        const draw = query => { choices.replaceChildren(); let entries = !query && !this.category ? pack.suggested.map(id => pack.entries.find(e => e.id === id && K.active(e))).filter(Boolean) : K.search(pack, query, { category: this.category, limit: 20 }); if (!entries.length && !query) entries = K.search(pack, '', { category: this.category, limit: 12 }); entries.forEach(e => choices.append(this.buttonFor(e))); if (!entries.length) choices.append(el('p', 'empty', pack.organization.fallback)); title.textContent = query ? 'Gefundene Themen · ' + entries.length : this.category ? 'Passende Antworten' : 'Was möchtest du entdecken?'; };
         form.onsubmit = e => { e.preventDefault(); draw(input.value); }; input.oninput = () => draw(input.value); draw('');
       }
       const foot = el('footer', 'foot'); foot.append(el('span', '', '✦ Hinterlegtes Vereinswissen'));
-      const voice = el('button', '', this.voice ? 'Ton an' : 'Vorlesen'); voice.setAttribute('aria-label', 'Vorlesen ' + (this.voice ? 'ausschalten' : 'einschalten')); voice.setAttribute('aria-pressed', String(this.voice)); voice.disabled = !('speechSynthesis' in window); voice.onclick = () => { this.voice = !this.voice; if (!this.voice && 'speechSynthesis' in window) speechSynthesis.cancel(); if (this.voice && current) this.speak(current.answer); this.render(); };
-      const pause = el('button', '', this.paused ? 'Weiterlaufen' : 'Pause'); pause.setAttribute('aria-pressed', String(this.paused)); if (this.motion.matches) { pause.disabled = true; pause.textContent = 'Bewegung reduziert'; } pause.onclick = () => { this.setPaused(!this.paused); }; foot.append(voice, pause); this.panel.append(head, body, foot);
+      const voice = el('button', '', this.voice ? 'Ton an' : 'Vorlesen'); voice.setAttribute('aria-label', 'Vorlesen ' + (this.voice ? 'ausschalten' : 'einschalten')); voice.setAttribute('aria-pressed', String(this.voice)); voice.disabled = !('speechSynthesis' in window); voice.onclick = () => { this.voice = !this.voice; if (!this.voice && 'speechSynthesis' in window) speechSynthesis.cancel(); if (this.voice) this.speak(current?current.answer:this.personality.next('greeting')); this.render(); };
+      const chatter=el('button','',this.chatterEnabled?'Plaudern an':'Plaudern aus');chatter.setAttribute('aria-label','Automatische Sprüche '+(this.chatterEnabled?'ausschalten':'einschalten'));chatter.setAttribute('aria-pressed',String(this.chatterEnabled));
+      chatter.onclick=()=>{this.chatterEnabled=!this.chatterEnabled;this.hideTip();this.nextChatter=performance.now()+1000;this.render();};
+      const pause = el('button', '', this.paused ? 'Weiterlaufen' : 'Pause'); pause.setAttribute('aria-pressed', String(this.paused)); if (this.motion.matches) { pause.disabled = true; pause.textContent = 'Bewegung reduziert'; } pause.onclick = () => { this.setPaused(!this.paused); }; foot.append(voice,chatter,pause); this.panel.append(head, body, foot);
     }
     destroy() { this.destroyed = true; cancelAnimationFrame(this.raf); this.timers.forEach(clearTimeout); document.removeEventListener('keydown', this.onKey); window.removeEventListener('resize', this.onResize); document.removeEventListener('visibilitychange', this.onVisibility); this.motion.removeEventListener('change', this.onMotion); if (this.voice && 'speechSynthesis' in window) speechSynthesis.cancel(); this.host.remove(); }
   }

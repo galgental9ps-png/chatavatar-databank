@@ -20,6 +20,7 @@ jobs:
           node --check avatar.js
           node --check mascot.js
           node --check motion-core.js
+          node --check personality-core.js
           node --check rig.js
           node --check walk-renderer.js
           node --check walk-flow.js

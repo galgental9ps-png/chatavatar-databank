@@ -140,7 +140,7 @@ Technische Primärquellen:
 
 Tavi verwendet 16 aufeinanderfolgende Laufphasen mit vollständigem Hin- und Rückschwung der Arme, die zur tatsächlich zurückgelegten Strecke passen. Anlaufen und Anhalten werden beschleunigt bzw. abgebremst. Beim Ziehen nutzt sie eigene Halteposen, beim Loslassen eine Fallpose mit Schwerkraft, anschließend Landung und Aufstehen. Das Fallen funktioniert auch bei geöffnetem Antwortfenster. Bei pausierter oder reduzierter Bewegung wird sie ohne Fallanimation am Boden abgesetzt. Die Demo bietet Lauf- und Sprungknöpfe.
 
-Die Vereinsfarben, Wissensdaten und die Script-Adresse bleiben erhalten. Neue Grafiken: assets/tva-poses-v2.webp, assets/tva-walk-v4.webp und assets/tva-locomotion-v1.webp; Steuerung: motion-core.js, mascot.js und mascot.css. Die bestehenden alten Grafiken bleiben für ältere Einbindungen vorhanden. Neue Cache-Version: tavi-motion-15. Bei alter Anzeige die Webseite vollständig neu laden.
+Die Vereinsfarben, Wissensdaten und die Script-Adresse bleiben erhalten. Neue Grafiken: assets/tva-poses-v2.webp, assets/tva-walk-v4.webp und assets/tva-locomotion-v1.webp; Steuerung: motion-core.js, mascot.js und mascot.css. Die bestehenden alten Grafiken bleiben für ältere Einbindungen vorhanden. Neue Cache-Version: tavi-motion-16. Bei alter Anzeige die Webseite vollständig neu laden.
 
 Alle Tests einschließlich Bewegung ausführen: node --test tests/*.test.cjs
 
@@ -148,8 +148,18 @@ Beim Blick nach links wird nur das Brustlogo vorab gegengespiegelt. So bleibt TV
 
 Die Laufbilder sind farblich an die Flugposen angeglichen; der graue Schleier wurde aus der Grafik entfernt. Der Renderer verändert keine RGB-Farben und entfernt nur schwache transparente Hintergrundreste. Die Flugposen bleiben unverändert. Die neue Standpose gehört zur neuen Anlaufserie.
 
-Gelegentliche Superheldinnen-Flüge: Der erste Flug startet frühestens nach 28–43 Sekunden, danach folgen jeweils 45–75 Sekunden Pause. Tavi steigt auf, schwebt kurz und landet sanft. Bei geöffnetem Chat, Pause, reduzierter Bewegung oder zu wenig Platz starten keine automatischen Flüge. Die Demo bietet den Knopf Fliegen; instance.fly() startet denselben Flug. Radschläge sind deaktiviert und aus der Oberfläche entfernt.
+Gelegentliche Superheldinnen-Flüge: Der erste Flug startet frühestens nach 22–34 Sekunden, danach folgen jeweils 35–55 Sekunden Pause. Tavi steigt auf, schwebt kurz und landet sanft. Bei geöffnetem Chat, Pause, reduzierter Bewegung oder zu wenig Platz starten keine automatischen Flüge. Die Demo bietet den Knopf Fliegen; instance.fly() startet denselben Flug. Radschläge sind deaktiviert und aus der Oberfläche entfernt.
 
 Das neue Atlas assets/tva-locomotion-v1.webp enthält echte Zwischenposen für Stehen, Drehen, Anlaufen und Anhalten. Der Stand verwendet denselben Zeichensatz wie die Übergänge. Es gibt keine Überblendungen oder transparenten Doppelbilder. Beim Richtungswechsel dreht Tavi sich über eine frontale Pose; ein normaler Start dauert 300 ms, ein Start mit Drehung 480 ms und das Anhalten 380 ms. Die Schritte enden in einer passenden Fußstellung, bevor die Arme wieder an die Hüften gehen. Hinweise erscheinen erst nach dem Anhalten. Lauftempo und Fluganimation sind unverändert.
 
 Die Drehung geht direkt in den Lauf über: Das Vorwärtsbewegen beginnt bereits während der letzten Drehposen, die dabei erreichte Geschwindigkeit wird in den Laufzyklus übernommen. Fast identische Wartebilder im Anlauf sind entfernt; es gibt keinen zweiten Start aus dem Stillstand.
+
+## Freundliche Kinderbegleiterin – Version 16
+
+Tavi begrüßt Kinder und Familien mit persönlicher Du-Ansprache. `personality-core.js` enthält 80 kurze Begrüßungen, freundliche und lustige Kommentare sowie ermutigende Sätze. Je nach Bewegung wählt sie passende Sprüche zum Laufen, Hüpfen oder Fliegen. Alle Sprüche einer Gruppe werden durchgemischt verwendet, bevor sie sich wiederholen. Automatische Kommentare erscheinen etwa alle 10–17 Sekunden, sofern gerade Platz für eine neue Sprechblase ist. Sie ergänzen die redaktionellen TVA-Antworten; neue Vereinsauskünfte werden dadurch nicht erfunden. Die Rechercheangaben der 68 Wissenseinträge bleiben unverändert.
+
+Kleine automatische Hüpfer, wechselnde Gesten und kürzere Standpausen machen sie lebendiger. Die ersten Hüpfer sind nach 11–16 Sekunden möglich, danach mit mindestens 14–24 Sekunden Abstand. Flüge und Hüpfer starten erst nach dem Anhalten. Die vollständigen Actionframes, die zusammenhängenden Laufübergänge und die lesbare TVA-Schrift bleiben erhalten. Radschläge bleiben deaktiviert.
+
+Während eines geöffneten Antwortfensters, beim Ziehen, bei Pause, ausgeblendeter Seite oder reduzierter Bewegung startet keine automatische Plauderei. Mit **Plaudern an/aus** lässt sie sich unabhängig vom Ton abschalten. **Vorlesen** aktiviert hörbare Begrüßungen, Sprüche und Antworten; bis dahin bleibt sie stumm. Laufende Sprachausgabe wird von automatischen Sprüchen nicht unterbrochen. Die Systemstimme spricht etwas ruhiger.
+
+Die Demo hat den Knopf **Tavi plaudert**. Die Instanz bietet `showChatter()`; mit `showChatter('encourage')` wählt sie einen ermutigenden Satz. `ChatAvatar.create({chatter:false})` startet mit deaktivierten automatischen Sprüchen.
